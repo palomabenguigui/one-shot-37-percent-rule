@@ -60,3 +60,17 @@ After these changes, the PRD is approved. Then create a public GitHub repository
 ```
 **Summary:** Applied all PRD changes and marked it approved; initialized git with a Mac/Python/JS .gitignore and made the first commit; installed GitHub CLI and asked the user to log in before creating the public repo and pushing.
 
+## 2026-11-04 23:04:28 IST
+**Prompt:**
+```
+Name it one-shot-37-percent-rule, create it as public and push. Then show me the repository URL.
+```
+**Summary:** Created the public GitHub repo one-shot-37-percent-rule and pushed the first commit (PRD.md, PROMPTS.md, .gitignore).
+
+## 2026-11-04 23:08:27 IST
+**Prompt:**
+```
+Add a short initial README.md: project title, one paragraph on what One Shot is, the current status (PRD approved, simulation next), and a link to PRD.md. Keep it brief, we'll expand it at the end with screenshots and results. Then commit and push.
+```
+**Summary:** Added a short initial README.md (title, description, status, links to PRD.md and PROMPTS.md), then committed and pushed it with the updated prompt log.
+
