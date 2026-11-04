@@ -74,3 +74,25 @@ Add a short initial README.md: project title, one paragraph on what One Shot is,
 ```
 **Summary:** Added a short initial README.md (title, description, status, links to PRD.md and PROMPTS.md), then committed and pushed it with the updated prompt log.
 
+## 2026-11-04 23:14:19 IST
+**Prompt:**
+```
+Let's start step 1, the simulation. Before writing code, explain in plain terms the two return distributions you propose (normal world and unicorn world) and why they make sense for startups. Wait for my OK.
+```
+**Summary:** Proposed both worlds as lognormal with the same shape and a different spread (normal: median 2x, low spread; unicorn: median 0.5x, high spread, matched to published VC outcome data), explained in plain terms; waiting for OK.
+
+## 2026-11-04 23:19:01 IST
+**Prompt:**
+```
+OK to both: lognormal for both worlds, and the unicorn world for the live game. In the README, explain why we chose lognormal over Pareto, and state clearly that these distributions are illustrative models inspired by VC data, not predictions.
+Now write sim.py. When it's done, run it and show me the results for H0, H1 and H2 with the verdicts, in a short table. Don't move on to the game yet.
+```
+**Summary:** Wrote python/sim.py (200k games, paired comparisons, pre-set decision rule), ran it and saved data/results.json: H0 CONFIRMED, H1 CONFIRMED, H2 INCONCLUSIVE (mean says wait longer, median disagrees); added the return models, the lognormal-vs-Pareto reasoning and a disclaimer to the README.
+
+## 2026-11-04 23:23:34 IST
+**Prompt:**
+```
+Commit and push milestone 1
+```
+**Summary:** Committed and pushed milestone 1 (python/sim.py, data/results.json, requirements.txt, README return models, prompt log).
+
