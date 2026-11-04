@@ -97,7 +97,8 @@ Because all strategies decide using only **relative rank** ("is this the best so
 - A hypothesis is **confirmed** if the predicted difference has the predicted sign and its **95% confidence interval excludes zero**.
 - It is **rejected** if the difference has the opposite sign and its 95% CI excludes zero.
 - Otherwise it is **inconclusive**.
-- For every strategy and world we report the **mean**, the **median** and the **95% CI**. Because averages are unstable when returns are heavy-tailed, if the mean and the median point in opposite directions for H2, it is reported as inconclusive.
+- For every strategy and world we report the **mean**, the **median** and the **95% CI**. The verdict is based only on the 95% CI of the mean difference. The median is reported as an observation and does not change the verdict.
+- A confirmed effect can still be small. Alongside each verdict we report the size of the effect in plain terms (e.g. "about 2% higher average return").
 
 ### How results drive the slides
 Slides 8 and 9 are **result-driven**. Each one states the hypothesis, shows the chart, and stamps a verdict: **CONFIRMED / REJECTED / INCONCLUSIVE**. The final takeaway (slide 10) is written only after the results are known.
@@ -113,8 +114,8 @@ Slides 8 and 9 are **result-driven**. Each one states the hypothesis, shows the 
 | 5 | The 37% rule | One visual: observe first, then pick the first "best so far" | 0:45 |
 | 6 | Round 2 | Room vs. four hidden bots on the same startups, then reveal | 2:00 |
 | 7 | Live Python | "One game is luck." Run the simulation live with the code visible: P(best) per strategy, plus a replay of the room's own 20 startups reshuffled 10,000 times | 1:15 |
-| 8 | Hypothesis 1 | Average return vs. P(best), normal world, with verdict | 0:45 |
-| 9 | Hypothesis 2 | Unicorn world, with verdict | 0:45 |
+| 8 | Hypothesis 1 | Average return vs. P(best), normal world, with verdict. Note that the effect is real but small in practice (about 2% higher average return) | 0:45 |
+| 9 | Hypothesis 2 | Unicorn world, with verdict. Observation: the average and the typical (median) result point in different directions | 0:45 |
 | 10 | Takeaway | The room's stopping points vs. the strategies, plus the conclusion supported by the data | 0:45 |
 
 Total ≈ 10:00. The room's own data (when it stopped in each round) is illustrative only: it is two group decisions, not a study.

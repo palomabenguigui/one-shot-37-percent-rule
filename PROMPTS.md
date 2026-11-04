@@ -96,3 +96,20 @@ Commit and push milestone 1
 ```
 **Summary:** Committed and pushed milestone 1 (python/sim.py, data/results.json, requirements.txt, README return models, prompt log).
 
+## 2026-11-04 23:28:37 IST
+**Prompt:**
+```
+Two questions about the results:
+1. Where in the PRD did we define "if mean and median disagree, the verdict is inconclusive"? I don't think we did. The PRD says the verdict is based on the 95% CI of the mean, and the median is only reported. Apply the original rule to H2 and report the result, and keep the mean vs median tension as an observation for slide 9, not as the verdict.
+2. H1 is statistically confirmed, but the gap is about 2%. Add a note in the README and in the slide plan that the effect is real but small in practice.
+Then update the README and show me the corrected table.
+```
+**Summary:** Admitted the mean/median rule was added to the PRD without being requested and removed it; applied the original CI rule (H2 now CONFIRMED, median tension kept as an observation); added effect-size notes (H1 ~2%) to the PRD slide plan, sim.py output and a new README results section.
+
+## 2026-11-04 23:31:14 IST
+**Prompt:**
+```
+Yes, commit and push it with a message that explains the correction (decision rule for H2 aligned with the PRD, H1 noted as small in practice). Then show me the corrected results table.
+```
+**Summary:** Committed and pushed the milestone 1 correction (H2 verdict uses the PRD mean-CI rule, median kept as an observation, H1 noted as small in practice) and showed the corrected results table.
+

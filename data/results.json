@@ -340,7 +340,8 @@
         "diff": 0.06739086084694089,
         "ci_low": 0.0633739424310798,
         "ci_high": 0.07140777926280198,
-        "verdict": "CONFIRMED"
+        "verdict": "CONFIRMED",
+        "relative_gain": 0.020716914926821182
       },
       "best_cutoff": 5,
       "verdict": "CONFIRMED"
@@ -353,13 +354,17 @@
         "ci_high": 0.09614827061245451,
         "verdict": "CONFIRMED"
       },
-      "median_diff": -0.23596594472561905,
-      "median_agrees": false,
+      "observation": {
+        "median_diff": -0.23596594472561905,
+        "median_agrees_with_mean": false,
+        "median_25": 4.105980555410101,
+        "median_37": 3.982103875056956
+      },
       "best_cutoff": {
         "normal": 5,
         "unicorn": 6
       },
-      "verdict": "INCONCLUSIVE"
+      "verdict": "CONFIRMED"
     }
   }
 }

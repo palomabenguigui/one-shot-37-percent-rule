@@ -154,6 +154,8 @@ def run(trials=200_000, seed=37):
     # H1: in the normal world, on average return, 25% beats 37%,
     #     and the best cutoff is earlier than 37% (k < 7).
     h1_test = summary(*mean_ci(payoff("normal", 5) - payoff("normal", 7)))
+    # Effect size in plain terms: how much higher the average return is, in %.
+    h1_test["relative_gain"] = h1_test["diff"] / strategies["37%"]["normal"]["mean"]
     h1_best_k = best_cutoff(sweep["normal"]["mean"])
     if h1_test["verdict"] == "REJECTED":
         h1 = "REJECTED"
@@ -165,7 +167,8 @@ def run(trials=200_000, seed=37):
     # H2: in the unicorn world, the best cutoff for average return moves later
     #     than in the normal world. Measured as: the advantage of 37% over 25%,
     #     relative to each world's average startup, is larger in the unicorn
-    #     world. Also checked with medians and with the sweep's best cutoff.
+    #     world, and the sweep's best cutoff is later. The verdict uses the
+    #     mean only (PRD decision rule); the median is reported as an observation.
     mu, mn = world_mean("unicorn"), world_mean("normal")
     did = ((payoff("unicorn", 7) - payoff("unicorn", 5)) / mu
            - (payoff("normal", 7) - payoff("normal", 5)) / mn)
@@ -175,9 +178,7 @@ def run(trials=200_000, seed=37):
                   - (med["normal"][7] - med["normal"][5]) / WORLDS["normal"]["median"])
     h2_best_k = {w: best_cutoff(sweep[w]["mean"]) for w in WORLDS}
     median_agrees = (median_did > 0) == (h2_test["diff"] > 0)
-    if not median_agrees:
-        h2 = "INCONCLUSIVE"
-    elif h2_test["verdict"] == "REJECTED":
+    if h2_test["verdict"] == "REJECTED":
         h2 = "REJECTED"
     elif h2_test["verdict"] == "CONFIRMED" and h2_best_k["unicorn"] > h2_best_k["normal"]:
         h2 = "CONFIRMED"
@@ -196,8 +197,11 @@ def run(trials=200_000, seed=37):
             "H1": {"claim": "Normal world, average return: 25% beats 37%; best cutoff before 37%",
                    "test": h1_test, "best_cutoff": h1_best_k, "verdict": h1},
             "H2": {"claim": "Unicorn world: best cutoff for average return moves later",
-                   "test": h2_test, "median_diff": median_did,
-                   "median_agrees": bool(median_agrees),
+                   "test": h2_test,
+                   "observation": {"median_diff": median_did,
+                                   "median_agrees_with_mean": bool(median_agrees),
+                                   "median_25": med["unicorn"][5],
+                                   "median_37": med["unicorn"][7]},
                    "best_cutoff": h2_best_k, "verdict": h2},
         },
     }

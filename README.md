@@ -8,6 +8,22 @@
 - ✅ Python simulation (`python/sim.py`)
 - ⏭️ Next: the game logic
 
+## Simulation results
+
+200,000 simulated games per strategy, with the same games used for every strategy and both worlds. Verdicts follow the decision rule in the [PRD](PRD.md): a hypothesis is confirmed if the 95% confidence interval of the mean difference excludes zero in the predicted direction.
+
+| | Hypothesis | Key evidence | Verdict |
+|---|---|---|---|
+| **H0** | On the chance of picking the single best startup, 37% beats 10%, 25% and 50% | 37% picks the best 38.4% of the time (25%: 36.8%, 50%: 36.1%, 10%: 25.7%). Best cutoff: observe 7 of 20 | ✅ CONFIRMED |
+| **H1** | Normal world, average return: 25% beats 37% | 3.32x vs 3.25x, a gap of +0.067x (95% CI +0.063 to +0.071). Best cutoff: observe 5 | ✅ CONFIRMED |
+| **H2** | Unicorn world: the best cutoff for average return moves later | Best cutoff moves from 5 to 6. The advantage of 37% over 25% is larger than in the normal world (95% CI of the difference: +0.022 to +0.096) | ✅ CONFIRMED |
+
+**Notes**
+
+- **H1 is real but small in practice.** Deciding at 25% instead of 37% raises the average return by about **2%**. The simulation is large enough to be sure the gap exists, but an investor would barely notice it in a single deal.
+- **H2 is also a small shift.** The best cutoff moves by one startup (from 5 to 6). In the unicorn world, 25% and 37% are nearly tied on average return (9.11x vs 9.17x).
+- **Observation for H2 (not part of the verdict):** in the unicorn world the average and the typical result point in different directions. Waiting longer raises the *average* return because it catches more jackpots, but the *typical* (median) result is better with 25% (4.11x vs 3.98x). This is a familiar tension in venture capital: a strategy can win on average while the typical outcome gets worse.
+
 ## Return models
 
 Returns are measured as multiples: 1x means you get your money back, 3x means you triple it. The simulation uses two "worlds":
