@@ -7,13 +7,30 @@
 - ✅ PRD approved
 - ✅ Python simulation (`python/sim.py`)
 - ✅ Game logic in 2D: two seeded rounds, invest/pass, forced last pick, four bots, reveal
-- ⏭️ Next: the slide shell (10 slides)
+- ✅ Slide shell: 10 slides that fit any screen, keyboard navigation, the game inside slides 3, 4 and 6
+- ⏭️ Next: live Python with Pyodide on slides 7 to 9 (currently placeholders)
 
 Setup instructions will be added when the project is complete.
 
 ## Screenshots
 
-**Start menu.** The game test page, with one button per round.
+### The presentation (milestone 3)
+
+**Slide 1: title.** The cold open, with the authors.
+
+![Slide 1: title](screenshots/04-slide1-title.png)
+
+**Slide 5: the 37% rule.** Shown before round 2: observe the first 7 startups, then invest in the first one that beats everything seen so far.
+
+![Slide 5: the 37% rule](screenshots/05-slide5-37-rule.png)
+
+**Slide 6: round 2 reveal with the bots.** All 20 startups in one row, with a line where each bot stops observing. The table compares the room with the four bots on the same startups.
+
+![Slide 6: round 2 reveal with the bots](screenshots/06-slide6-round2-bots.png)
+
+### The game (milestone 2)
+
+**Start menu.** The game test page from milestone 2, with one button per round. It has since been replaced by the slides.
 
 ![Start menu](screenshots/01-menu.png)
 

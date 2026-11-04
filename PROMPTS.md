@@ -149,3 +149,25 @@ I tested it again and it works. I saved screenshots on my Desktop: move them to 
 ```
 **Summary:** Moved the 3 Desktop screenshots to screenshots/ (menu, round 1 reveal, round 2 observe zone), added them with captions to the README, updated the status, and committed and pushed milestone 2.
 
+## 2026-11-05 00:03:35 IST
+**Prompt:**
+```
+Let's start milestone 3, the slide shell. Fix the two layout issues there: every slide must fit the screen with no scrolling, and the "Best seen so far" line must not overlap the badge.
+Before coding, show me the plan: how the 10 slides follow the PRD, how the game fits into slides 3 and 6, and the keyboard controls for moving between slides. Wait for my OK.
+```
+**Summary:** Proposed the milestone 3 plan: a fixed 1920x1080 stage scaled to fit any screen (no scrolling), a badge fix, the 10 slides mapped to the PRD, how the game sits in slides 3/4/6, and the slide and game keys; waiting for OK.
+
+## 2026-11-05 00:10:35 IST
+**Prompt:**
+```
+The plan is OK. Keep the PRD order: the rule on slide 5, before round 2. Two additions: put our names on slide 1 (Paloma Benguigui and Shira Dvir, Bar-Ilan University), and leave slides 7 to 9 with a clear placeholder until milestone 4, when we add Python. Build it and tell me when I can test it.
+```
+**Summary:** Built the 10-slide deck (js/slides.js, reworked js/ui.js and css/style.css, new index.html): a fixed 1920x1080 stage scaled to fit, the badge overlap fixed, names on slide 1, placeholders on slides 7-9, slide and game keys, a guard against skipping a round, choices saved across reloads; checked with headless Chrome screenshots and fixed cut-off names in the reveals.
+
+## 2026-11-05 00:20:35 IST
+**Prompt:**
+```
+I tested all 10 slides in fullscreen and they work. On slide 10, end with this line: "There is no universal stopping rule. A good manager first defines what success means, then chooses when to stop searching." I saved new screenshots on my Desktop: move them to screenshots/, add them to README.md with captions, update the README status, then commit and push milestone 3.
+```
+**Summary:** Replaced the final line of slide 10 with the requested sentence; fixed the slide 10 pins overlapping the zone labels; moved 3 screenshots (slides 1, 5, 6) to screenshots/ and added them with captions; updated the README status; committed and pushed milestone 3.
+

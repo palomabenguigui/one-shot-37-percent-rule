@@ -1,22 +1,75 @@
-// Everything on screen: menu, startup card, reveal. Rules live in game.js.
-//
-// Presenter keys:
-//   A = invest, R = pass, B = reveal the bots (round 2)
-//   Hidden: Backspace = undo the last click only, N = restart the round, Esc = menu
+// The game's screens, drawn inside slides 3, 4 and 6. Rules live in game.js.
+// Every function here returns HTML; slides.js puts it on the stage.
 
 import { STARTUPS } from "./startups.js";
 import { Game, createRound, N, BOTS } from "./game.js";
 
 // Round 2 only: the 37% rule's "observe only" zone covers the first 7 startups.
-const OBSERVE_K = BOTS.find((b) => b.name === "37%").k;
+export const OBSERVE_K = BOTS.find((b) => b.name === "37%").k;
 
-const app = document.getElementById("app");
-let game = null;
+// ------------------------------------------------------------------ state
+// Saved in the browser tab, so an accidental reload keeps the room's choices.
+
+const STORE_KEY = "one-shot-game";
+const games = {};
 let botsShown = false;
+
+function loadSaved() {
+  try {
+    return JSON.parse(sessionStorage.getItem(STORE_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+const saved = loadSaved();
+botsShown = Boolean(saved.botsShown);
+
+function save() {
+  const rounds = {};
+  for (const [n, g] of Object.entries(games)) rounds[n] = { index: g.index, pick: g.pick, last: g.last };
+  sessionStorage.setItem(STORE_KEY, JSON.stringify({ botsShown, rounds }));
+}
+
+export function getGame(n) {
+  if (!games[n]) {
+    const g = new Game(createRound(n, STARTUPS[n]));
+    const s = saved.rounds && saved.rounds[n];
+    if (s) Object.assign(g, { index: s.index, pick: s.pick, last: s.last });
+    games[n] = g;
+  }
+  return games[n];
+}
+
+// Position (1-20) where the room invested in round n, or null if not played yet.
+export function stopPosition(n) {
+  const g = getGame(n);
+  return g.done ? g.pick + 1 : null;
+}
+
+// Apply a game action. Returns true if something changed (the slide redraws).
+export function gameAction(n, action) {
+  const g = getGame(n);
+  let changed = false;
+  if (action === "invest") changed = g.invest();
+  if (action === "pass") changed = g.pass();
+  if (action === "undo") changed = g.undo();
+  if (action === "restart") {
+    g.restart();
+    changed = true;
+  }
+  if (action === "bots" && n === 2 && g.done && !botsShown) {
+    botsShown = true;
+    changed = true;
+  }
+  if (n === 2 && (action === "undo" || action === "restart") && changed) botsShown = false;
+  if (changed) save();
+  return changed;
+}
 
 // ------------------------------------------------------------------ helpers
 
-const fmt = (v) => (v < 0.01 ? "<0.01" : v < 1 ? v.toFixed(2) : v.toFixed(1)) + "x";
+export const fmt = (v) => (v < 0.01 ? "<0.01" : v < 1 ? v.toFixed(2) : v.toFixed(1)) + "x";
 
 function ordinal(n) {
   const s = ["th", "st", "nd", "rd"];
@@ -26,28 +79,24 @@ function ordinal(n) {
 
 const rankText = (rank) => (rank === 1 ? "the best" : `${ordinal(rank)} best`) + ` of ${N}`;
 
-const esc = (text) =>
+export const esc = (text) =>
   String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-// ------------------------------------------------------------------ screens
+// ------------------------------------------------------------------ slides 3 and 6
 
-function renderMenu() {
-  app.innerHTML = `
-    <section class="menu">
-      <h1>One Shot</h1>
-      <p class="subtitle">$1M. 20 startups. One shot.</p>
-      <div class="menu-buttons">
-        <button class="btn primary" data-action="round" data-round="1">Play round 1</button>
-        <button class="btn primary" data-action="round" data-round="2">Play round 2</button>
-      </div>
-      <p class="hint">Game test page (milestone 2)</p>
-    </section>`;
+// What a round slide shows: the game while playing; after investing, a pause
+// screen in round 1 (the reveal is on slide 4) or the reveal in round 2.
+export function roundSlideHTML(n) {
+  const g = getGame(n);
+  if (!g.done) return playHTML(g);
+  return n === 1 ? investedHTML(g) : revealHTML(2);
 }
 
-function renderPlay() {
+function playHTML(game) {
   const s = game.current;
   const best = game.isBestSoFar();
   const prev = game.bestBefore();
+
   // Round 1 shows no percentages and no zone, so nothing hints at the rule.
   const showZone = game.round.number === 2;
   const inZone = showZone && game.index < OBSERVE_K;
@@ -59,8 +108,8 @@ function renderPlay() {
     : all.join("");
   const seenPct = Math.round(((game.index + 1) / N) * 100);
 
-  app.innerHTML = `
-    <section class="play">
+  return `
+    <div class="play">
       <header class="topbar">
         <span class="round-label">Round ${game.round.number}</span>
         <span class="counter">Startup <strong>${game.index + 1}</strong> of ${N}${showZone ? ` · <strong>${seenPct}%</strong> seen` : ""}</span>
@@ -68,7 +117,7 @@ function renderPlay() {
       <div class="dots ${showZone ? "with-zone" : ""}">${dots}</div>
       <p class="best-before">${prev ? `Best seen so far: <strong>${fmt(prev.value)}</strong> (#${prev.position} ${esc(prev.name)})` : "This is the first startup."}</p>
 
-      <article class="card ${best ? "is-best" : ""} ${game.isLast ? "is-last" : ""}">
+      <article class="card ${best ? "is-best" : ""}">
         <div class="badge ${best ? "" : "hidden"}">🏆 BEST SO FAR</div>
         ${inZone ? `<div class="zone-chip">Observe-only zone</div>` : ""}
         <div class="sector">${esc(s.sector)}</div>
@@ -80,27 +129,57 @@ function renderPlay() {
       </article>
 
       <div class="actions">
-        <button class="btn invest" data-action="invest">Invest <kbd>A</kbd></button>
-        <button class="btn pass" data-action="pass" ${game.isLast ? "disabled" : ""}>Pass <kbd>R</kbd></button>
+        <button class="btn invest" data-action="invest" tabindex="-1">Invest <kbd>A</kbd></button>
+        <button class="btn pass" data-action="pass" tabindex="-1" ${game.isLast ? "disabled" : ""}>Pass <kbd>R</kbd></button>
       </div>
-    </section>`;
+    </div>`;
 }
 
-function renderReveal() {
+// Round 1, after investing: a pause before the reveal on slide 4.
+function investedHTML(game) {
+  const s = game.round.startups[game.pick];
+  return `
+    <div class="invested">
+      <p class="invested-label">The room invested in</p>
+      <h2 class="invested-name">#${s.position} ${esc(s.name)}</h2>
+      <div class="invested-value">${fmt(s.value)}</div>
+      <p class="invested-question">Was it the best?</p>
+      <button class="btn primary" data-action="next" tabindex="-1">See the reveal →</button>
+    </div>`;
+}
+
+// ------------------------------------------------------------------ reveal (slides 4 and 6)
+
+export function revealHTML(n) {
+  const game = getGame(n);
+  if (!game.done) {
+    return `<div class="empty"><p>Play round ${n} first.</p><p class="muted">Go back to slide ${n === 1 ? 3 : 6}.</p></div>`;
+  }
   const r = game.result();
   const { startups } = game.round;
   const pick = startups[r.pick];
   const best = startups[r.best];
-  const isRound2 = game.round.number === 2;
+  const headline = r.pickRank === 1 ? `🎉 You found the best startup!` : `You picked the <strong>${rankText(r.pickRank)}</strong>.`;
 
-  const tiles = startups
+  return `
+    <div class="reveal">
+      <header class="topbar"><span class="round-label">Round ${n}: the reveal</span></header>
+      <h2 class="headline">${headline}</h2>
+      <div class="summary">
+        <div><span class="label">Your pick</span> #${pick.position} ${esc(pick.name)} · <strong>${fmt(pick.value)}</strong></div>
+        <div><span class="label">The best</span> #${best.position} ${esc(best.name)} · <strong>${fmt(best.value)}</strong></div>
+      </div>
+      ${n === 1 ? gridHTML(game, r) : stripHTML(game, r) + botsHTML(game, r)}
+    </div>`;
+}
+
+// Round 1: two rows of 10 tiles.
+function gridHTML(game, r) {
+  const tiles = game.round.startups
     .map((s, i) => {
       const tags = [];
       if (i === r.best) tags.push(`<span class="tag best">👑 BEST</span>`);
       if (i === r.pick) tags.push(`<span class="tag room">ROOM</span>`);
-      if (isRound2 && botsShown) {
-        r.bots.filter((b) => b.pick === i).forEach((b) => tags.push(`<span class="tag bot">${b.name}</span>`));
-      }
       const unseen = i > r.pick;
       return `
         <div class="tile ${i === r.pick ? "picked" : ""} ${i === r.best ? "top" : ""} ${unseen ? "unseen" : ""}">
@@ -111,139 +190,64 @@ function renderReveal() {
         </div>`;
     })
     .join("");
-
-  const headline =
-    r.pickRank === 1
-      ? `🎉 You found the best startup!`
-      : `You picked the <strong>${rankText(r.pickRank)}</strong>.`;
-
-  let botsBlock = "";
-  if (isRound2) {
-    if (!botsShown) {
-      botsBlock = `<button class="btn primary" data-action="bots">Reveal the bots <kbd>B</kbd></button>`;
-    } else {
-      const rows = [
-        { name: "The room", watched: "—", pick: r.pick, rank: r.pickRank, room: true },
-        ...r.bots.map((b) => ({ name: `Bot ${b.name}`, watched: `${b.k} startups`, pick: b.pick, rank: b.rank, stuck: b.stuck })),
-      ];
-      const bestRank = Math.min(...rows.map((x) => x.rank));
-      botsBlock = `
-        <table class="bots">
-          <thead><tr><th>Investor</th><th>Watched first</th><th>Invested in</th><th>Return</th><th>Rank</th></tr></thead>
-          <tbody>
-            ${rows
-              .map(
-                (x) => `
-              <tr class="${x.room ? "room-row" : ""} ${x.rank === bestRank ? "winner" : ""}">
-                <td>${x.name}</td>
-                <td>${x.watched}</td>
-                <td>#${x.pick + 1} ${esc(startups[x.pick].name)}${x.stuck ? ` <span class="stuck">forced last</span>` : ""}</td>
-                <td>${fmt(startups[x.pick].value)}</td>
-                <td>${rankText(x.rank)}</td>
-              </tr>`
-              )
-              .join("")}
-          </tbody>
-        </table>`;
-    }
-  }
-
-  app.innerHTML = `
-    <section class="reveal">
-      <header class="topbar">
-        <span class="round-label">Round ${game.round.number}: the reveal</span>
-      </header>
-      <h2 class="headline">${headline}</h2>
-      <div class="summary">
-        <div><span class="label">Your pick</span> #${pick.position} ${esc(pick.name)} · <strong>${fmt(pick.value)}</strong></div>
-        <div><span class="label">The best</span> #${best.position} ${esc(best.name)} · <strong>${fmt(best.value)}</strong></div>
-      </div>
-      ${isRound2 ? renderStrip(r) : `<div class="grid">${tiles}</div>`}
-      <div class="reveal-actions">${botsBlock}</div>
-    </section>`;
+  return `<div class="grid">${tiles}</div>`;
 }
 
-// Round 2 reveal: all 20 startups in one row, with a marker where each bot's
-// observation zone ends (after 2, 5, 7 and 10 startups).
-function renderStrip(r) {
-  const { startups } = game.round;
-  const cells = startups
+// Round 2: one row of 20, with a line where each bot's observation zone ends.
+function stripHTML(game, r) {
+  const cells = game.round.startups
     .map((s, i) => {
       const tags = [];
       if (i === r.best) tags.push(`<span class="tag best">👑</span>`);
       if (i === r.pick) tags.push(`<span class="tag room">ROOM</span>`);
-      if (botsShown) {
-        r.bots.filter((b) => b.pick === i).forEach((b) => tags.push(`<span class="tag bot">${b.name}</span>`));
-      }
+      if (botsShown) r.bots.filter((b) => b.pick === i).forEach((b) => tags.push(`<span class="tag bot">${b.name}</span>`));
       return `
         <div class="cell ${i === r.pick ? "picked" : ""} ${i === r.best ? "top" : ""} ${i > r.pick ? "unseen" : ""}">
           <div class="cell-pos">#${s.position}</div>
-          <div class="cell-name" title="${esc(s.name)}">${esc(s.name)}</div>
+          <div class="cell-name">${esc(s.name)}</div>
           <div class="cell-value">${fmt(s.value)}</div>
           <div class="cell-tags">${tags.join("")}</div>
         </div>`;
     })
     .join("");
-  const markers = BOTS.map(
-    (b) => `<div class="zone-mark ${b.name === "37%" ? "main" : ""}" style="left:${(b.k / N) * 100}%"><span>${b.name}</span></div>`
-  ).join("");
   return `
     <div class="strip-wrap">
       <p class="strip-caption">Lines show where each bot stops observing and starts investing.</p>
-      <div class="strip">${cells}${markers}</div>
+      <div class="strip">${cells}${zoneMarksHTML()}</div>
     </div>`;
 }
 
-function render() {
-  if (!game) renderMenu();
-  else if (game.done) renderReveal();
-  else renderPlay();
+export function zoneMarksHTML() {
+  return BOTS.map(
+    (b) => `<div class="zone-mark ${b.name === "37%" ? "main" : ""}" style="left:${(b.k / N) * 100}%"><span>${b.name}</span></div>`
+  ).join("");
 }
 
-// ------------------------------------------------------------------ actions
-
-function startRound(number) {
-  game = new Game(createRound(number, STARTUPS[number]));
-  botsShown = false;
-  render();
+function botsHTML(game, r) {
+  if (!botsShown) {
+    return `<div class="reveal-actions"><button class="btn primary" data-action="bots" tabindex="-1">Reveal the bots <kbd>B</kbd></button></div>`;
+  }
+  const { startups } = game.round;
+  const rows = [
+    { name: "The room", watched: "—", pick: r.pick, rank: r.pickRank, room: true },
+    ...r.bots.map((b) => ({ name: `Bot ${b.name}`, watched: `${b.k} startups`, pick: b.pick, rank: b.rank, stuck: b.stuck })),
+  ];
+  const bestRank = Math.min(...rows.map((x) => x.rank));
+  const body = rows
+    .map(
+      (x) => `
+      <tr class="${x.room ? "room-row" : ""} ${x.rank === bestRank ? "winner" : ""}">
+        <td>${x.name}</td>
+        <td>${x.watched}</td>
+        <td>#${x.pick + 1} ${esc(startups[x.pick].name)}${x.stuck ? ` <span class="stuck">forced last</span>` : ""}</td>
+        <td>${fmt(startups[x.pick].value)}</td>
+        <td>${rankText(x.rank)}</td>
+      </tr>`
+    )
+    .join("");
+  return `
+    <table class="bots">
+      <thead><tr><th>Investor</th><th>Watched first</th><th>Invested in</th><th>Return</th><th>Rank</th></tr></thead>
+      <tbody>${body}</tbody>
+    </table>`;
 }
-
-const actions = {
-  round: (el) => startRound(Number(el.dataset.round)),
-  invest: () => game && game.invest() && render(),
-  pass: () => game && game.pass() && render(),
-  bots: () => {
-    if (game && game.done && game.round.number === 2) {
-      botsShown = true;
-      render();
-    }
-  },
-  undo: () => {
-    if (game && game.undo()) {
-      botsShown = false;
-      render();
-    }
-  },
-  restart: () => game && startRound(game.round.number),
-  menu: () => {
-    game = null;
-    render();
-  },
-};
-
-app.addEventListener("click", (e) => {
-  const el = e.target.closest("[data-action]");
-  if (el && !el.disabled) actions[el.dataset.action](el);
-});
-
-const keys = { a: "invest", r: "pass", b: "bots", n: "restart", backspace: "undo", escape: "menu" };
-
-document.addEventListener("keydown", (e) => {
-  if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return; // holding a key never clicks twice
-  const action = keys[e.key.toLowerCase()];
-  if (!action) return;
-  e.preventDefault(); // stops Backspace from navigating back in some browsers
-  actions[action]();
-});
-
-render();
