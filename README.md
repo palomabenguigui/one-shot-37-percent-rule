@@ -6,7 +6,24 @@
 
 - ✅ PRD approved
 - ✅ Python simulation (`python/sim.py`)
-- ⏭️ Next: the game logic
+- ✅ Game logic in 2D: two seeded rounds, invest/pass, forced last pick, four bots, reveal
+- ⏭️ Next: the slide shell (10 slides)
+
+Setup instructions will be added when the project is complete.
+
+## Screenshots
+
+**Start menu.** The game test page, with one button per round.
+
+![Start menu](screenshots/01-menu.png)
+
+**Round 1 reveal.** All 20 startups are revealed after the room invests. The room's pick is marked ROOM, the best startup is marked BEST, and startups after the pick are marked "never seen." Round 1 shows no percentages, so nothing hints at the 37% rule.
+
+![Round 1 reveal](screenshots/02-round1-reveal.png)
+
+**Round 2 during play.** The counter shows the percentage of startups seen, and the first 7 startups form the "observe only" zone, ending at the 37% line. This startup beats everything seen so far, so it gets the gold BEST SO FAR badge.
+
+![Round 2 with the observe-only zone](screenshots/03-round2-observe-zone.png)
 
 ## Simulation results
 

@@ -113,3 +113,39 @@ Yes, commit and push it with a message that explains the correction (decision ru
 ```
 **Summary:** Committed and pushed the milestone 1 correction (H2 verdict uses the PRD mean-CI rule, median kept as an observation, H1 noted as small in practice) and showed the corrected results table.
 
+## 2026-11-04 23:35:06 IST
+**Prompt:**
+```
+Let's start milestone 2, the game logic in plain 2D, no 3D yet.
+Before coding, show me a short plan: which files you'll create and what each one does.
+Details I want:
+- Fictional startups inspired by the Israeli tech scene (name, sector, one-line pitch), with a few playful ones. No real company names.
+- Keyboard: A to invest, R to pass, plus on-screen buttons.
+- Show the "best so far" badge clearly, and a counter like "Startup 8 of 20".
+- Round 1 and round 2 use the fixed seeded sets. In round 2, reveal the bots' choices only after the room decides.
+- At the end of each round, reveal all 20 startups, the best one, and the room's pick with its rank.
+Wait for my OK on the plan, then build it and tell me how to open it in the browser to test.
+```
+**Summary:** Proposed the milestone 2 file plan (index.html test page, style.css, rng.js, startups.js, game.js, ui.js) with sample startups and two small extras; waiting for OK before coding.
+
+## 2026-11-04 23:41:24 IST
+**Prompt:**
+```
+OK, include both extras and build it. One condition on Undo: it should only undo the last click, for presenter mistakes, and it must not be visible on screen, since the core rule is that you can't go back. Then tell me how to open it in the browser to test.
+```
+**Summary:** Built the 2D game (index.html, css/style.css, js/rng.js, startups.js, game.js, ui.js) with 40 fictional startups, A/R keys, best-so-far badge, counter, forced last pick, round reveal, hidden bots in round 2, hidden one-step undo (Backspace) and restart (N); bots verified to match sim.py; gave per-round scales (2x, 20x); explained how to open it locally.
+
+## 2026-11-04 23:54:51 IST
+**Prompt:**
+```
+In round 1, don't show any percentage, so we don't hint at the rule. In round 2, show the percentage of startups seen so far and mark where 37% is, as the "observe only" zone. In the round 2 reveal, mark on the row of 20 startups where each bot's observation zone ends (10%, 25%, 37%, 50%).
+```
+**Summary:** Round 1 stays free of percentages; round 2 play now shows % seen, an "Observe only" zone over the first 7 dots with a gold 37% marker and a chip on those cards; the round 2 reveal is a single row of 20 with dashed lines at 10/25/37/50% (37% in gold).
+
+## 2026-11-04 23:59:42 IST
+**Prompt:**
+```
+I tested it again and it works. I saved screenshots on my Desktop: move them to screenshots/, add them to README.md with a short caption each, update the README status, then commit and push milestone 2.
+```
+**Summary:** Moved the 3 Desktop screenshots to screenshots/ (menu, round 1 reveal, round 2 observe zone), added them with captions to the README, updated the status, and committed and pushed milestone 2.
+
