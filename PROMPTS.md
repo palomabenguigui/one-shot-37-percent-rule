@@ -171,3 +171,40 @@ I tested all 10 slides in fullscreen and they work. On slide 10, end with this l
 ```
 **Summary:** Replaced the final line of slide 10 with the requested sentence; fixed the slide 10 pins overlapping the zone labels; moved 3 screenshots (slides 1, 5, 6) to screenshots/ and added them with captions; updated the README status; committed and pushed milestone 3.
 
+## 2026-11-07 23:51:29 IST
+**Prompt:**
+```
+Let's start milestone 4, live Python on slides 7 to 9. Before coding, explain in plain terms how Pyodide runs Python inside the browser, and show me the plan for each slide: what runs live, what the audience sees, and how the code is shown on screen.
+Requirements: a visible loading indicator, the automatic fallback to results.json if Pyodide fails, and a way for me to test the fallback (for example with Wi-Fi off). Wait for my OK.
+```
+**Summary:** Explained how Pyodide works in plain terms and proposed the milestone 4 plan: a background worker, a status pill, live runs per slide, real code excerpts from sim.py, automatic fallback with a 10 s wait, and an ?offline flag plus hidden O key to test it; waiting for OK.
+
+## 2026-11-08 00:02:55 IST
+**Prompt:**
+```
+The plan is OK. One addition on slide 7: let me change the number of startups live (for example 20, 50, 100) and rerun, so the room can ask "what if there were 100 startups?" and see whether 37% still holds. Keep it simple.
+Also, write the exact test URL for the fallback mode in the README, and tell me when I can test.
+```
+**Summary:** Built live Python (Pyodide 314.0.7 in a module worker; the classic importScripts route failed in testing): slide 7 live run with 20/50/100 startups plus a replay of the room's startups, slides 8-9 with live 200k-game results, code excerpts from sim.py, status pill, automatic fallback, ?offline and hidden O key; run_live() now takes n; verified end to end in headless Chrome (live results match results.json exactly); README gained how-to-run, the fallback URL and the keys.
+
+## 2026-11-08 00:12:09 IST
+**Prompt:**
+```
+On slides 8 and 9, hide the code panel by default and let the charts use the full width. On slide 7, show the code by default. On all three slides, add a key (C) to show or hide the code. Tell me when I can test it.
+```
+**Summary:** Code panel now shown by default on slide 7 and hidden on slides 8-9 (charts use the full width); added the C key to toggle it on slides 7-9; added C to the README keys table; checked the full-width layout with screenshots.
+
+## 2026-11-08 00:16:21 IST
+**Prompt:**
+```
+Add a small, discreet hint "C · code" in a corner of slides 7, 8 and 9, so the presenter knows the key exists. Also add a "Keyboard controls" table to README.md listing every key in the presentation and what it does.
+```
+**Summary:** Added a faint "C · code" hint in the bottom-right corner of slides 7-9 (next to the slide number); replaced the short keys list in the README with a full "Keyboard controls" section (every key, where it works, what it does) right after "How to run".
+
+## 2026-11-08 00:20:45 IST
+**Prompt:**
+```
+Both modes, the C key and the hint work. I saved screenshots of slides 7 and 8 on my Desktop: move them to screenshots/, add them to README.md with captions, update the README status, then commit and push milestone 4.
+```
+**Summary:** Moved the slide 7 and slide 8 screenshots to screenshots/, added a "Live Python (milestone 4)" section with captions to the README, updated the status, and committed and pushed milestone 4.
+

@@ -209,19 +209,21 @@ def run(trials=200_000, seed=37):
 
 # ---------------------------------------------------------------- live helpers
 
-def run_live(trials=10_000, seed=None):
-    """Quick version for the stage: the four strategies only."""
+def run_live(trials=10_000, seed=None, n=N):
+    """Quick version for the stage: the four strategies, with n startups per game.
+    Each strategy observes the same share of startups: 37% of 100 = 37."""
     rng = np.random.default_rng(seed)
-    z = rng.standard_normal((trials, N))
+    z = rng.standard_normal((trials, n))
     rows = np.arange(trials)
     best = z.argmax(axis=1)
     out = {}
-    for name, k in STRATEGIES.items():
+    for name in STRATEGIES:
+        k = int(name.rstrip("%")) * n // 100     # with n = 20: 2, 5, 7, 10
         chosen = choose(z, k)
-        out[name] = {"p_best": float((chosen == best).mean()),
+        out[name] = {"k": k, "p_best": float((chosen == best).mean()),
                      **{f"mean_{w}": float(world_returns(z, w)[rows, chosen].mean())
                         for w in WORLDS}}
-    return {"trials": trials, "strategies": out}
+    return {"trials": trials, "n": n, "strategies": out}
 
 
 def replay(startup_values, trials=10_000, seed=None):

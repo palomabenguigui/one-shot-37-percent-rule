@@ -8,9 +8,49 @@
 - ✅ Python simulation (`python/sim.py`)
 - ✅ Game logic in 2D: two seeded rounds, invest/pass, forced last pick, four bots, reveal
 - ✅ Slide shell: 10 slides that fit any screen, keyboard navigation, the game inside slides 3, 4 and 6
-- ⏭️ Next: live Python with Pyodide on slides 7 to 9 (currently placeholders)
+- ✅ Live Python with Pyodide on slides 7 to 9: live runs with 20, 50 or 100 startups, a replay of the room's own startups, an automatic fallback to saved results, and a code panel toggled with `C`
+- ⏭️ Next: the Three.js scene
 
-Setup instructions will be added when the project is complete.
+## How to run
+
+The presentation is a local web page. It must be opened through a small local server, not by double-clicking `index.html`, because browsers block this kind of JavaScript (and Pyodide) on `file://` pages.
+
+1. In a terminal, go to the project folder and start the server:
+   - **Mac:** `python3 -m http.server`
+   - **Windows:** `python -m http.server`
+2. Open **http://localhost:8000** in Chrome or Edge, and press `F` for fullscreen.
+
+Live Python needs internet the first time: Pyodide (about 15–20 MB) is downloaded from a CDN in the background while slides 1–6 are shown. After that, the browser usually keeps a copy.
+
+### Testing the fallback (no Python)
+
+Open **http://localhost:8000/?offline**
+
+The page then skips Pyodide and uses the saved results in `data/results.json`, exactly as it would if Pyodide failed to load. The pill in the bottom-left corner shows "💾 Saved results". Turning off Wi-Fi is not a reliable test, because the browser may already have a copy of Pyodide.
+
+The fallback also switches on automatically if Pyodide fails, or if it is still not ready 10 seconds after opening slide 7. The hidden `O` key switches to saved results at any time.
+
+To regenerate `data/results.json` outside the browser: `pip install -r requirements.txt`, then `python python/sim.py`.
+
+## Keyboard controls
+
+| Key | Where | What it does |
+|---|---|---|
+| `→`, `Space`, `Page Down` | All slides | Next slide. On slides 3 and 6 it waits until the room has invested |
+| `Shift` + `→` | Slides 3 and 6 | Force the next slide, even if the round is still in progress |
+| `←`, `Page Up` | All slides | Previous slide |
+| `Home` | All slides | Back to slide 1 |
+| `F` | All slides | Fullscreen on/off |
+| `A` | Slides 3 and 6 | Invest in the current startup |
+| `R` | Slides 3 and 6 | Pass on the current startup (not possible on startup #20) |
+| `B` | Slide 6 | Reveal the bots' choices, after the room has invested |
+| `P` | Slide 7 | Run the live simulation (10,000 games) |
+| `C` | Slides 7, 8 and 9 | Show or hide the Python code (shown on slide 7, hidden on 8 and 9 by default) |
+| `Backspace` | Slides 3 and 6 | Hidden: undo the last click only, for presenter mistakes |
+| `N` | Slides 3 and 6 | Hidden: restart the current round (for rehearsals) |
+| `O` | All slides | Hidden: switch to saved results instead of live Python |
+
+Presentation clickers usually send `Page Up` / `Page Down`, so they work for moving between slides. The startup-count buttons on slide 7 (20 / 50 / 100) are clicked with the mouse.
 
 ## Screenshots
 
@@ -27,6 +67,16 @@ Setup instructions will be added when the project is complete.
 **Slide 6: round 2 reveal with the bots.** All 20 startups in one row, with a line where each bot stops observing. The table compares the room with the four bots on the same startups.
 
 ![Slide 6: round 2 reveal with the bots](screenshots/06-slide6-round2-bots.png)
+
+### Live Python (milestone 4)
+
+**Slide 7: Python, live.** Python is loaded and ready (green pill, bottom left). The presenter picks the number of startups per game (20, 50 or 100) and presses `P` to run 10,000 games in the browser. The panel on the right shows the rule exactly as written in `python/sim.py`.
+
+![Slide 7: live Python, ready to run](screenshots/07-slide7-python-live.png)
+
+**Slide 8: Hypothesis 1.** The 37% rule finds the single best startup most often, but the 25% strategy earns a slightly higher average return. The label at the bottom confirms the 200,000-game analysis was computed live in the browser. The code panel is hidden here by default (press `C` to show it).
+
+![Slide 8: Hypothesis 1](screenshots/08-slide8-hypothesis1.png)
 
 ### The game (milestone 2)
 

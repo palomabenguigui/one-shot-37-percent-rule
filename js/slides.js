@@ -4,23 +4,168 @@
 //   → / Space / Page Down = next slide     ← / Page Up = previous slide
 //   F = fullscreen    Home = slide 1
 //   On slides 3 and 6: A = invest, R = pass, B = reveal the bots (slide 6)
-//   Hidden: Backspace = undo the last click, N = restart the round
+//   On slide 7: P = run the live simulation
+//   On slides 7-9: C = show or hide the code panel
+//   Hidden: Backspace = undo the last click, N = restart the round,
+//           O = switch to saved results (Python fallback)
 //   While a round is in progress, → won't leave the slide. Shift + → forces it.
+//   Test the fallback: open the page with ?offline (http://localhost:8000/?offline).
 
-import { N, BOTS } from "./game.js";
+import { N } from "./game.js";
 import { roundSlideHTML, revealHTML, gameAction, getGame, stopPosition, zoneMarksHTML, OBSERVE_K } from "./ui.js";
+import { py, startPython, onChange, useFallback, requireSoon, runLive, replay, excerpt } from "./python.js";
+import { barChart, emptyChart, codePanel } from "./charts.js";
 
 const stage = document.getElementById("stage");
 
+// ------------------------------------------------------------------ Python slides (7-9)
+
+const STRATEGY_NAMES = ["10%", "25%", "37%", "50%"];
+const pct = (x) => (100 * x).toFixed(1) + "%";
+const mult = (x) => x.toFixed(2) + "x";
+
+// Code panel on/off per slide (C key): shown on slide 7, hidden on 8 and 9.
+const codeShown = { python: true, h1: false, h2: false };
+
+// Slide 7 state: number of startups per game and the last live run.
+const live = { n: 20, running: false, result: null, replay: null };
+
+async function runSlide7() {
+  if (py.status !== "ready" || live.running) return;
+  live.running = true;
+  render();
+  try {
+    live.result = await runLive(live.n);
+    live.replay = null;
+    if (live.n === 20 && getGame(2).done) live.replay = await replay(getGame(2).values);
+  } catch {
+    live.result = null; // Python failed mid-run: the slide now shows saved results
+  } finally {
+    live.running = false;
+    render();
+  }
+}
+
+function sourceTag() {
+  if (py.source === "live") {
+    return `<div class="source live">🐍 Computed live in this browser · 200,000 games · ${(py.liveMs / 1000).toFixed(1)} s</div>`;
+  }
+  return `<div class="source saved">💾 Saved results · 200,000 games, computed by python/sim.py before the talk</div>`;
+}
+
+function slide7() {
+  const labels = STRATEGY_NAMES;
+  const title = "Chance of picking the single best startup";
+  const ready = py.status === "ready";
+  let chart;
+  let meta = "";
+
+  if (py.status === "fallback") {
+    const s = py.analysis.strategies;
+    chart = barChart({
+      title,
+      max: 0.5,
+      items: labels.map((name) => ({ label: name, sub: `observe ${s[name].k}`, value: s[name].p_best.value, text: pct(s[name].p_best.value) })),
+    });
+    meta = `<p class="meta">💾 Saved results for 20 startups. Changing the number of startups needs live Python.</p>`;
+  } else if (live.result && !live.running) {
+    const s = live.result.strategies;
+    chart = barChart({
+      title,
+      max: 0.5,
+      items: labels.map((name) => ({ label: name, sub: `observe ${s[name].k}`, value: s[name].p_best, text: pct(s[name].p_best) })),
+    });
+    meta = `<p class="meta">🐍 ${live.result.trials.toLocaleString("en-US")} games × 4 strategies with ${live.result.n} startups · ${(live.result.ms / 1000).toFixed(2)} s, live in this browser</p>`;
+    if (live.replay) {
+      meta += `<p class="meta replay">On <strong>your</strong> 20 round 2 startups, reshuffled 10,000 times, the 37% rule found the best <strong>${pct(live.replay.strategies["37%"].p_best)}</strong> of the time.</p>`;
+    } else if (live.n === 20 && !getGame(2).done) {
+      meta += `<p class="meta muted">Play round 2 to replay the room's own startups.</p>`;
+    }
+  } else {
+    const message = py.status === "loading" ? `<span class="spinner"></span> Python is loading…` : live.running ? `<span class="spinner"></span> Running…` : "Press <kbd>P</kbd> to run 10,000 games";
+    chart = emptyChart(title, labels, message);
+  }
+
+  const sizes = [20, 50, 100]
+    .map((n) => `<button class="chip ${n === live.n ? "active" : ""}" data-action="size" data-n="${n}" tabindex="-1" ${ready ? "" : "disabled"}>${n}</button>`)
+    .join("");
+
+  return `
+    <div class="py-slide">
+      <p class="kicker">Python, live</p>
+      <h1 class="py-title">One game is luck. Let's play 10,000.</h1>
+      <div class="py-body">
+        <div class="py-left">
+          <div class="controls">
+            <span>Startups per game:</span> ${sizes}
+            <button class="btn primary run" data-action="run" tabindex="-1" ${ready && !live.running ? "" : "disabled"}>Run <kbd>P</kbd></button>
+          </div>
+          ${chart}
+          ${meta}
+        </div>
+        ${codeShown.python ? codePanel("The rule, as written in python/sim.py", excerpt("def choose(", "return np.where")) : ""}
+      </div>
+    </div>`;
+}
+
+function verdictStamp(v) {
+  return `<div class="stamp ${v.toLowerCase()}">${v}</div>`;
+}
+
+function slide8() {
+  const a = py.analysis;
+  if (!a) return `<div class="center"><p class="muted">Loading results…</p></div>`;
+  const s = a.strategies;
+  const h1 = a.hypotheses.H1;
+  const gain = h1.test.relative_gain;
+  return `
+    <div class="py-slide">
+      <p class="kicker">Hypothesis 1</p>
+      <h1 class="py-title">What if you care about average return?</h1>
+      <div class="py-body">
+        <div class="py-left">
+          <div class="chart-pair">
+            ${barChart({ title: "Chance of picking the best", max: 0.5, items: STRATEGY_NAMES.map((n) => ({ label: n, value: s[n].p_best.value, text: pct(s[n].p_best.value) })) })}
+            ${barChart({ title: "Average return (normal world)", items: STRATEGY_NAMES.map((n) => ({ label: n, value: s[n].normal.mean, text: mult(s[n].normal.mean) })) })}
+          </div>
+          <div class="verdict-row">
+            ${verdictStamp(h1.verdict)}
+            <div class="verdict-text"><strong>25% beats 37% on average return.</strong><br>Real but small: about ${(100 * gain).toFixed(0)}% higher average return.</div>
+          </div>
+          ${sourceTag()}
+        </div>
+        ${codeShown.h1 ? codePanel("The H1 test, as written in python/sim.py", excerpt("h1_test = summary", "h1_best_k =")) : ""}
+      </div>
+    </div>`;
+}
+
+function slide9() {
+  const a = py.analysis;
+  if (!a) return `<div class="center"><p class="muted">Loading results…</p></div>`;
+  const s = a.strategies;
+  const h2 = a.hypotheses.H2;
+  return `
+    <div class="py-slide">
+      <p class="kicker">Hypothesis 2</p>
+      <h1 class="py-title">What if the world is full of unicorns?</h1>
+      <div class="py-body">
+        <div class="py-left">
+          <div class="chart-pair">
+            ${barChart({ title: "Average return (unicorn world)", items: STRATEGY_NAMES.map((n) => ({ label: n, value: s[n].unicorn.mean, text: mult(s[n].unicorn.mean) })) })}
+            ${barChart({ title: "Typical (median) return", items: STRATEGY_NAMES.map((n) => ({ label: n, value: s[n].unicorn.median, text: mult(s[n].unicorn.median) })) })}
+          </div>
+          <div class="verdict-row">
+            ${verdictStamp(h2.verdict)}
+            <div class="verdict-text"><strong>The best cutoff moves later:</strong> from observing ${h2.best_cutoff.normal} to observing ${h2.best_cutoff.unicorn} startups.<br><span class="observation">The average says wait a bit longer. The typical result says don't.</span></div>
+          </div>
+          ${sourceTag()}
+        </div>
+        ${codeShown.h2 ? codePanel("The H2 test, as written in python/sim.py", excerpt("mu, mn = world_mean", "h2_test = summary")) : ""}
+      </div>
+    </div>`;
+}
+
 // ------------------------------------------------------------------ slides
-
-const placeholder = (title, question) => `
-  <div class="center">
-    <p class="kicker">${title}</p>
-    <h1 class="big">${question}</h1>
-    <div class="placeholder">🐍 Live Python simulation<br><span>Coming in milestone 4</span></div>
-  </div>`;
-
 const SLIDES = [
   {
     id: "open",
@@ -69,9 +214,9 @@ const SLIDES = [
     },
   },
   { id: "round2", game: 2, render: () => roundSlideHTML(2) },
-  { id: "python", render: () => placeholder("Python, live", "One game is luck. Let's play 10,000.") },
-  { id: "h1", render: () => placeholder("Hypothesis 1", "What if you care about average return?") },
-  { id: "h2", render: () => placeholder("Hypothesis 2", "What if the world is full of unicorns?") },
+  { id: "python", render: slide7 },
+  { id: "h1", render: slide8 },
+  { id: "h2", render: slide9 },
   {
     id: "takeaway",
     render: () => {
@@ -108,16 +253,28 @@ const SLIDES = [
 const clamp = (i) => Math.max(0, Math.min(SLIDES.length - 1, i));
 let current = clamp((parseInt(location.hash.slice(1), 10) || 1) - 1);
 
+function statusPill() {
+  const label = {
+    loading: `<span class="spinner"></span> Python loading…`,
+    ready: "🐍 Python ready",
+    fallback: "💾 Saved results",
+  }[py.status];
+  return `<div class="py-pill ${py.status}">${label}</div>`;
+}
+
 function render() {
   const s = SLIDES[current];
   stage.innerHTML = `
     <section class="slide slide-${s.id}">${s.render()}</section>
+    ${statusPill()}
+    ${s.id in codeShown ? `<div class="key-hint"><kbd>C</kbd> · code</div>` : ""}
     <div class="slide-num">${current + 1} / ${SLIDES.length}</div>`;
 }
 
 function show(i) {
   current = clamp(i);
   history.replaceState(null, "", `#${current + 1}`); // a reload stays on this slide
+  if (SLIDES[current].id === "python") requireSoon();
   render();
 }
 
@@ -146,9 +303,15 @@ window.addEventListener("resize", fit);
 
 const GAME_KEYS = { a: "invest", r: "pass", b: "bots", n: "restart", backspace: "undo" };
 
-function runGameAction(action) {
+function runGameAction(action, el) {
   const s = SLIDES[current];
   if (action === "next") return next();
+  if (action === "run") return runSlide7();
+  if (action === "size") {
+    live.n = Number(el.dataset.n);
+    live.result = null;
+    return runSlide7();
+  }
   if (s.game && gameAction(s.game, action)) render();
 }
 
@@ -164,6 +327,12 @@ document.addEventListener("keydown", (e) => {
   if (key === "arrowleft" || key === "pageup") return show(current - 1);
   if (key === "home") return show(0);
   if (key === "f") return toggleFullscreen();
+  if (key === "o") return useFallback("presenter pressed O"); // hidden: switch to saved results
+  if (key === "p" && SLIDES[current].id === "python") return runSlide7();
+  if (key === "c" && SLIDES[current].id in codeShown) {
+    codeShown[SLIDES[current].id] = !codeShown[SLIDES[current].id];
+    return render();
+  }
   if (GAME_KEYS[key]) runGameAction(GAME_KEYS[key]);
 });
 
@@ -174,8 +343,10 @@ stage.addEventListener("mousedown", (e) => {
 
 stage.addEventListener("click", (e) => {
   const el = e.target.closest("[data-action]");
-  if (el && !el.disabled) runGameAction(el.dataset.action);
+  if (el && !el.disabled) runGameAction(el.dataset.action, el);
 });
 
+onChange(render);
 fit();
-render();
+show(current);
+startPython();
