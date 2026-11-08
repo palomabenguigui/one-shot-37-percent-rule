@@ -3,19 +3,21 @@
 // Keys:
 //   → / Space / Page Down = next slide     ← / Page Up = previous slide
 //   F = fullscreen    Home = slide 1
-//   On slides 3 and 6: A = invest, R = pass, B = reveal the bots (slide 6)
-//   On slide 7: P = run the live simulation
-//   On slides 7-9: C = show or hide the code panel
+//   On slides 4 and 7: A = invest, R = pass, B = reveal the bots (slide 7)
+//   On slides 2 and 6: P = replay the street animation
+//   On slide 8: P = run the live simulation
+//   On slides 8-10: C = show or hide the code panel
 //   Hidden: Backspace = undo the last click, N = restart the round,
 //           O = switch to saved results (Python fallback)
 //   While a round is in progress, → won't leave the slide. Shift + → forces it.
 //   Test the fallback: open the page with ?offline (http://localhost:8000/?offline).
 
 import { N } from "./game.js";
-import { roundSlideHTML, revealHTML, gameAction, getGame, stopPosition, zoneMarksHTML, OBSERVE_K } from "./ui.js";
+import { roundSlideHTML, revealHTML, gameAction, getGame, stopPosition, zoneMarksHTML } from "./ui.js";
 import { py, startPython, onChange, useFallback, requireSoon, runLive, replay, excerpt } from "./python.js";
 import { barChart, emptyChart, codePanel } from "./charts.js";
 import { showRunway, hideRunway } from "./scene3d.js";
+import { startStreet, reattachStreet, stopStreet } from "./street.js";
 
 const stage = document.getElementById("stage");
 
@@ -25,7 +27,7 @@ const STRATEGY_NAMES = ["10%", "25%", "37%", "50%"];
 const pct = (x) => (100 * x).toFixed(1) + "%";
 const mult = (x) => x.toFixed(2) + "x";
 
-// Code panel on/off per slide (C key): shown on slide 7, hidden on 8 and 9.
+// Code panel on/off per slide (C key): shown on slide 8, hidden on 9 and 10.
 const codeShown = { python: true, h1: false, h2: false };
 
 // Slide 7 state: number of startups per game and the last live run.
@@ -181,6 +183,15 @@ const SLIDES = [
       </div>`,
   },
   {
+    id: "parking",
+    street: "intro",
+    render: () => `
+      <div class="street-slide">
+        <p class="kicker">The parking problem</p>
+        <div class="street-slot tall"></div>
+      </div>`,
+  },
+  {
     id: "rules",
     render: () => `
       <div class="center">
@@ -198,21 +209,17 @@ const SLIDES = [
   { id: "reveal1", render: () => revealHTML(1) },
   {
     id: "rule",
-    render: () => {
-      const boxes = Array.from({ length: N }, (_, i) =>
-        `<div class="rule-box ${i < OBSERVE_K ? "observe" : "leap"}">${i + 1}</div>`).join("");
-      return `
-        <div class="center">
-          <p class="kicker">The 37% rule</p>
-          <h1 class="big">Look first. Then leap.</h1>
-          <div class="rule-row">${boxes}</div>
-          <div class="rule-legend">
-            <div class="observe-text"><strong>Observe the first 37%</strong><br>Invest in nothing. Learn what "good" looks like.</div>
-            <div class="leap-text"><strong>Then leap</strong><br>Invest in the first startup that beats everything you've seen.</div>
-          </div>
-          <p class="muted rule-note">Mathematicians proved this gives the best chance of picking the single best option.</p>
-        </div>`;
-    },
+    street: "rule",
+    render: () => `
+      <div class="street-slide">
+        <p class="kicker">The 37% rule</p>
+        <h1 class="street-title">Look first. Then leap.</h1>
+        <div class="street-slot"></div>
+        <div class="rule-legend">
+          <div class="observe-text"><strong>Observe the first 37%</strong><br>Commit to nothing. Learn what "good" looks like.</div>
+          <div class="leap-text"><strong>Then leap</strong><br>Take the first option that beats everything you've seen.</div>
+        </div>
+      </div>`,
   },
   { id: "round2", game: 2, render: () => roundSlideHTML(2) },
   { id: "python", render: slide7 },
@@ -271,13 +278,23 @@ function render() {
     ${s.id in codeShown ? `<div class="key-hint"><kbd>C</kbd> · code</div>` : ""}
     <div class="slide-num">${current + 1} / ${SLIDES.length}</div>`;
 
-  // 3D runway on slides 3 and 6 (and the round 1 pause screen).
+  // 2D street on slides 2 and 6: start on arrival, otherwise keep it running.
+  const slot = stage.querySelector(".street-slot");
+  if (slot && s.street) {
+    if (streetRestart || !reattachStreet(slot)) startStreet(slot, s.street);
+    streetRestart = false;
+  } else stopStreet();
+
+  // 3D runway on slides 4 and 7 (and the round 1 pause screen).
   const runway = stage.querySelector(".runway");
   if (runway && s.game && showRunway(runway, getGame(s.game))) runway.classList.add("has-3d");
   else hideRunway();
 }
 
+let streetRestart = true; // the street animation restarts each time its slide opens
+
 function show(i) {
+  streetRestart = clamp(i) !== current || streetRestart;
   current = clamp(i);
   history.replaceState(null, "", `#${current + 1}`); // a reload stays on this slide
   if (SLIDES[current].id === "python") requireSoon();
@@ -335,6 +352,10 @@ document.addEventListener("keydown", (e) => {
   if (key === "f") return toggleFullscreen();
   if (key === "o") return useFallback("presenter pressed O"); // hidden: switch to saved results
   if (key === "p" && SLIDES[current].id === "python") return runSlide7();
+  if (key === "p" && SLIDES[current].street) {
+    streetRestart = true; // replay the street animation
+    return render();
+  }
   if (key === "c" && SLIDES[current].id in codeShown) {
     codeShown[SLIDES[current].id] = !codeShown[SLIDES[current].id];
     return render();

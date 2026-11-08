@@ -455,3 +455,83 @@ kbd {
 .runway-canvas { display: block; width: 1760px; height: 210px; border-radius: 18px; }
 .runway.has-3d .dots { display: none; }
 .invested .runway { margin-bottom: 40px; }
+
+/* ---------------------------------------------------------------- 2D street (slides 2 and 6) */
+
+.street-slide { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
+.street-slide .kicker { margin: 6px 0 6px; }
+.street-title { font-size: 64px; margin: 0 0 10px; letter-spacing: -0.02em; }
+.street-slot { position: relative; width: 1760px; height: 640px; flex: none; }
+.street-slot.tall { height: 900px; }
+
+.street { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.street-svg { width: 100%; flex: 1; min-height: 0; display: block; transition: opacity 0.8s; }
+.street.faded .street-svg { opacity: 0.18; }
+
+.street .blocks rect { fill: #121820; }
+.street .road { fill: none; stroke: #2a3340; stroke-width: 64; stroke-linecap: round; stroke-linejoin: round; }
+.street .road-line { fill: none; stroke: #4a5563; stroke-width: 3; stroke-dasharray: 18 16; }
+.street .road-guide { fill: none; stroke: none; }
+
+.street .building rect { fill: #1d2633; stroke: var(--gold); stroke-width: 4; }
+.street .building-icon { font-size: 44px; text-anchor: middle; }
+.street .building-label { font-size: 24px; font-weight: 800; fill: var(--gold); text-anchor: middle; }
+
+.street .dist line { stroke: var(--text); stroke-width: 3; stroke-dasharray: 8 8; opacity: 0.85; }
+.street .dist rect { fill: var(--bg); stroke: var(--text); stroke-width: 2; }
+.street .dist text { font-size: 22px; font-weight: 800; fill: var(--text); text-anchor: middle; }
+.street .dist.passed { opacity: 0.3; }
+.street .dist.parked line, .street .dist.parked rect { stroke: var(--green); }
+.street .dist.parked text { fill: var(--green); }
+.street .dist.ghost { opacity: 0.55; }
+.street .dist.ghost line, .street .dist.ghost rect { stroke: var(--gold); }
+.street .dist.ghost text { fill: var(--gold); }
+
+.street .spot rect { fill: rgba(46, 204, 113, 0.18); stroke: var(--green); stroke-width: 3; }
+.street .spot text { font-size: 24px; font-weight: 900; text-anchor: middle; }
+.street .spot .spot-p { fill: var(--green); }
+.street .spot .spot-x { fill: var(--red); display: none; }
+.street .spot.passed rect { fill: rgba(157, 167, 179, 0.1); stroke: var(--muted); }
+.street .spot.passed .spot-p { display: none; }
+.street .spot.passed .spot-x { display: inline; }
+.street .spot.observe rect { fill: rgba(77, 163, 255, 0.3); stroke: var(--blue); }
+.street .spot.observe .spot-p { fill: var(--blue); }
+.street .spot.farther rect { fill: rgba(157, 167, 179, 0.1); stroke: var(--muted); }
+.street .spot.farther .spot-p { fill: var(--muted); }
+.street .spot.parked rect { fill: rgba(46, 204, 113, 0.4); stroke-width: 5; }
+.street .spot.ghost rect { fill: rgba(255, 204, 51, 0.15); stroke: var(--gold); stroke-dasharray: 6 5; }
+.street .spot.ghost .spot-p { fill: var(--gold); }
+
+.street .gate line { stroke: var(--gold); stroke-width: 6; }
+.street .gate text { font-size: 26px; font-weight: 900; fill: var(--gold); text-anchor: middle; }
+.street .gate.flash line { animation: gate-flash 0.9s ease-out 2; }
+@keyframes gate-flash { 50% { stroke-width: 14; filter: drop-shadow(0 0 12px var(--gold)); } }
+
+.street .car-body { fill: var(--blue); stroke: #001a33; stroke-width: 2; }
+.street .car-glass { fill: #001a33; opacity: 0.7; }
+.street .bubble rect { fill: var(--text); }
+.street .bubble text { font-size: 26px; font-weight: 800; fill: var(--bg); text-anchor: middle; }
+
+.street .hidden { display: none; }
+
+.street-caption {
+  flex: none; height: 52px; text-align: center;
+  font-size: 32px; font-weight: 700; color: var(--text);
+}
+.street-readout {
+  position: absolute; right: 10px; top: 0; font-size: 30px; color: var(--muted);
+  background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 8px 20px;
+}
+.street-readout strong { color: var(--blue); }
+.street-readout.hidden { display: none; }
+
+.street-outro { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: fade-in 0.8s ease-out; }
+.street-outro.hidden, .outro-final.hidden { display: none; }
+.outro-icons { display: flex; gap: 140px; font-size: 36px; font-weight: 700; color: var(--muted); }
+.outro-icons div { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.outro-icons span { font-size: 120px; }
+.outro-line { font-size: 60px; font-weight: 900; margin: 40px 0 0; }
+.outro-final { font-size: 48px; font-weight: 800; color: var(--gold); margin: 30px 0 0; animation: fade-in 0.8s ease-out; }
+@keyframes fade-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.slide-rule .rule-legend { margin-top: 26px; font-size: 32px; }

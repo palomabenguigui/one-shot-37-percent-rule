@@ -1,7 +1,7 @@
-// Live Python for slides 7-9, with an automatic fallback to data/results.json.
+// Live Python for slides 8-10, with an automatic fallback to data/results.json.
 //
 // Status: "loading" -> "ready", or "fallback" if Pyodide fails, if it is still
-// not ready 10 s after opening slide 7, if the page is opened with ?offline,
+// not ready 10 s after opening slide 8, if the page is opened with ?offline,
 // or if the presenter presses the hidden O key.
 
 const PYODIDE_VERSION = "314.0.7"; // pinned, so a CDN update can't break the talk
@@ -84,11 +84,11 @@ export async function startPython() {
   }
 }
 
-// Called when slide 7 opens: give Python 10 more seconds, then fall back.
+// Called when slide 8 opens: give Python 10 more seconds, then fall back.
 export function requireSoon() {
   if (py.status !== "loading") return;
   setTimeout(() => {
-    if (py.status === "loading") useFallback("not ready 10 s after opening slide 7");
+    if (py.status === "loading") useFallback("not ready 10 s after opening slide 8");
   }, SLIDE7_WAIT_MS);
 }
 

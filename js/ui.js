@@ -1,4 +1,4 @@
-// The game's screens, drawn inside slides 3, 4 and 6. Rules live in game.js.
+// The game's screens, drawn inside slides 4, 5 and 7. Rules live in game.js.
 // Every function here returns HTML; slides.js puts it on the stage.
 
 import { STARTUPS } from "./startups.js";
@@ -82,7 +82,7 @@ const rankText = (rank) => (rank === 1 ? "the best" : `${ordinal(rank)} best`) +
 export const esc = (text) =>
   String(text).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-// ------------------------------------------------------------------ slides 3 and 6
+// ------------------------------------------------------------------ slides 4 and 7
 
 // What a round slide shows: the game while playing; after investing, a pause
 // screen in round 1 (the reveal is on slide 4) or the reveal in round 2.
@@ -155,7 +155,7 @@ function investedHTML(game) {
 export function revealHTML(n) {
   const game = getGame(n);
   if (!game.done) {
-    return `<div class="empty"><p>Play round ${n} first.</p><p class="muted">Go back to slide ${n === 1 ? 3 : 6}.</p></div>`;
+    return `<div class="empty"><p>Play round ${n} first.</p><p class="muted">Go back to slide ${n === 1 ? 4 : 7}.</p></div>`;
   }
   const r = game.result();
   const { startups } = game.round;

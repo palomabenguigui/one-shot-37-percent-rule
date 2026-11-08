@@ -2,7 +2,7 @@
 
 **Status:** Approved
 **Last updated:** 2026-11-04
-**Format:** ~10-slide interactive web presentation, runs locally, ~10 minutes
+**Format:** 11-slide interactive web presentation, runs locally, ~10 minutes
 **Work budget:** ~4 hours
 
 ---
@@ -22,7 +22,7 @@ We are Technology Management students, and we follow the startup world closely. 
 1. **Feel like an experiment, not a lecture.** The audience makes real decisions before learning any theory.
 2. **Make Python visible and live.** Python runs inside the presentation (Pyodide) and produces the results on screen.
 3. **Be honest with the data.** The twists are hypotheses; the slides show the outcome, whether it confirms or rejects them.
-4. **Fit in ~10 minutes and ~10 slides**, run locally on one laptop, and still work without internet (using pre-computed results).
+4. **Fit in ~10 minutes and 11 slides**, run locally on one laptop, and still work without internet (using pre-computed results).
 5. **Buildable in ~4 hours of work.**
 
 ## 3. Non-goals
@@ -105,20 +105,23 @@ Slides 8 and 9 are **result-driven**. Each one states the hypothesis, shows the 
 
 ## 7. Slide plan (~10 minutes)
 
+*Updated: a parking-problem intro (slide 2) was added after the cold open, so there are now 11 slides. Milestones below keep their original wording.*
+
 | # | Slide | Content | Time |
 |---|---|---|---|
-| 1 | Cold open | "You have $1M. 20 startups. One shot." (Pyodide starts loading in the background) | 0:30 |
-| 2 | Rules | One at a time, no going back, last one is forced, you vote | 0:30 |
-| 3 | Round 1 | Live game with the 3D scene | 2:00 |
-| 4 | Reveal | Where the best startup was, the room's pick and its rank | 0:45 |
-| 5 | The 37% rule | One visual: observe first, then pick the first "best so far" | 0:45 |
-| 6 | Round 2 | Room vs. four hidden bots on the same startups, then reveal | 2:00 |
-| 7 | Live Python | "One game is luck." Run the simulation live with the code visible: P(best) per strategy, plus a replay of the room's own 20 startups reshuffled 10,000 times | 1:15 |
-| 8 | Hypothesis 1 | Average return vs. P(best), normal world, with verdict. Note that the effect is real but small in practice (about 2% higher average return) | 0:45 |
-| 9 | Hypothesis 2 | Unicorn world, with verdict. Observation: the average and the typical (median) result point in different directions | 0:45 |
-| 10 | Takeaway | The room's stopping points vs. the strategies, plus the conclusion supported by the data | 0:45 |
+| 1 | Cold open | "You have $1M. 20 startups. One shot." (Pyodide starts loading in the background) | 0:20 |
+| 2 | The parking problem | 2D animation (not 3D): a top-down winding street. A car drives toward a destination building; free parking spots appear along the way, each with its distance to the building, and the car drives past them and can't go back. "Stop here, or keep going?" Then icons for an apartment and a job: "Same dilemma, different choices." Ends with "Today, you'll face this as investors." **No mention of the 37% rule**, so round 1 stays pure intuition | 0:40 |
+| 3 | Rules | One at a time, no going back, last one is forced, you vote | 0:30 |
+| 4 | Round 1 | Live game with the 3D scene | 1:50 |
+| 5 | Reveal | Where the best startup was, the room's pick and its rank | 0:40 |
+| 6 | The 37% rule | The same street as slide 2: the first 37% of the spots are tinted blue as "observe only"; then the car parks at the first spot closer to the destination than every spot it has seen. Shown honestly: the rule gives the best odds, not a guarantee | 0:45 |
+| 7 | Round 2 | Room vs. four hidden bots on the same startups, then reveal | 1:50 |
+| 8 | Live Python | "One game is luck." Run the simulation live with the code visible: P(best) per strategy, plus a replay of the room's own 20 startups reshuffled 10,000 times | 1:15 |
+| 9 | Hypothesis 1 | Average return vs. P(best), normal world, with verdict. Note that the effect is real but small in practice (about 2% higher average return) | 0:40 |
+| 10 | Hypothesis 2 | Unicorn world, with verdict. Observation: the average and the typical (median) result point in different directions | 0:40 |
+| 11 | Takeaway | The room's stopping points vs. the strategies, plus the conclusion supported by the data | 0:40 |
 
-Total ≈ 10:00. The room's own data (when it stopped in each round) is illustrative only: it is two group decisions, not a study.
+Total ≈ 9:50. The room's own data (when it stopped in each round) is illustrative only: it is two group decisions, not a study.
 
 ## 8. Technical design
 
@@ -126,9 +129,10 @@ Total ≈ 10:00. The room's own data (when it stopped in each round) is illustra
 |---|---|
 | Presentation | Single local `index.html` with vanilla JavaScript; slides are sections the presenter moves through |
 | Game logic | JavaScript module: startup generation, voting flow, bots, reveal |
-| 3D (**mandatory**, course requirement) | Three.js, one animated scene: a "deal flow" runway above the startup card on slides 3 and 6. 20 slots recede into fog; the current startup's tile rises into a spotlight (gold if best so far), passed tiles tip backward and sink (gone forever), the chosen tile lifts and spins, and a red wall appears on startup #20. In round 2, the first 7 slots sit on a blue "observe only" floor with a gold 37% arch that flashes when the room passes it. It draws only while something moves and never blocks input. If WebGL is unavailable, 2D progress dots are shown instead so the show never breaks |
+| 3D (**mandatory**, course requirement) | Three.js, one animated scene: a "deal flow" runway above the startup card on slides 4 and 7. 20 slots recede into fog; the current startup's tile rises into a spotlight (gold if best so far), passed tiles tip backward and sink (gone forever), the chosen tile lifts and spins, and a red wall appears on startup #20. In round 2, the first 7 slots sit on a blue "observe only" floor with a gold 37% arch that flashes when the room passes it. It draws only while something moves and never blocks input. If WebGL is unavailable, 2D progress dots are shown instead so the show never breaks |
 | Python | One file, `sim.py`, the single source of truth for the simulation (numpy) |
-| Python in the slides | Pyodide is loaded from a CDN, loads `sim.py` and runs it live on slides 7–9 |
+| Python in the slides | Pyodide is loaded from a CDN, loads `sim.py` and runs it live on slides 8–10 |
+| 2D street animation | Slides 2 and 6: one inline SVG scene (winding road, destination building, parking spots, car) animated with plain JavaScript. Spot distances are computed from where each spot sits, so "closer" on screen and the distance labels always agree. Not 3D, no library |
 | Fallback | The same `sim.py` is run ahead of time to produce `results.json`; slides use it automatically if Pyodide fails, is slow, or there is no internet |
 | Three.js | Version 0.187 (pinned), stored in the repo under `vendor/three/` (two module files and the MIT license), so the game and 3D work offline |
 | Startup sets | Fixed, seeded sets: one for round 1 and one for round 2, so rehearsals match the live show. In round 2 the room and the four bots play the same set |
@@ -138,7 +142,7 @@ Total ≈ 10:00. The room's own data (when it stopped in each round) is illustra
 ```
 index.html
 css/
-js/            game, slides, 3D scene, Pyodide bridge
+js/            game, slides, 3D scene, street animation, Pyodide bridge
 python/sim.py
 data/results.json
 vendor/three/  Three.js 0.187 (three.module.js, three.core.js, LICENSE)
@@ -177,7 +181,7 @@ Each milestone ends with a review and a push before the next begins. Time estima
 |---|---|
 | Pyodide loads slowly, fails, or there is no internet | Start loading on slide 1; automatic switch to `results.json` |
 | Live simulation is too slow on stage | Vectorized numpy; live run uses fewer games (e.g. 10,000); the full 100,000+ analysis is pre-computed |
-| Results are inconclusive or reject a twist | That is a valid outcome; slides 8–10 are written from the data |
+| Results are inconclusive or reject a twist | That is a valid outcome; slides 9–11 are written from the data |
 | Unicorn-world averages are unstable | Report mean, median and 95% CI |
 | Running out of the 4-hour budget | The Three.js scene is required, so it is not cut. Polish (extra animations, styling) is cut instead |
 | Voting slows the game down | Presenter can move fast; target ~5 seconds per startup |

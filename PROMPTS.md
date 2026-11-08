@@ -230,3 +230,33 @@ I tested both rounds and the 3D scene works. I saved screenshots of the 3D runwa
 ```
 **Summary:** Moved the two runway screenshots to screenshots/, added a "3D runway (milestone 5)" section with captions to the README, updated the status (next: final README, rehearsal, self-assessment), and committed and pushed milestone 5.
 
+## 2026-11-08 10:04:30 IST
+**Prompt:**
+```
+I want to add a new slide 2, right after the cold open, with a simple 2D animation (not 3D): a top-down street with a small car driving toward a destination building. Free parking spots appear along the way, the car drives past them and can't go back, with the question "Stop here, or keep going?". At the end, small icons for an apartment and a job: "Same dilemma, different choices." End with "Today, you'll face this as investors." It must not mention the 37% rule, so round 1 stays pure intuition.
+On the rule slide, reuse the same street: the first spots are tinted blue as "observe only", and then the car parks at the first spot that's closer to the destination than all the ones it has seen.
+Show me the plan for both animations before building, and update the PRD and slide numbers.
+```
+**Summary:** Flagged that on a straight street toward the destination every later spot is closer, which breaks the rule, and proposed a winding road with mixed distances; updated the PRD to 11 slides (new slide 2, the rule slide on the same street, renumbered slides and timings, new 2D-animation tech row); proposed the plan for both animations; waiting for OK before building.
+
+## 2026-11-08 10:15:16 IST
+**Prompt:**
+```
+The plan is OK, including the winding road and the honest "70 m was still ahead" beat. One check: if the car drives toward the destination, the audience may think later spots are always closer, so you should never stop early. Confirm that the winding road makes it visually clear that the distance to the destination goes up and down, without needing an explanation. Then build it and tell me when to test.
+```
+**Summary:** Confirmed the up-and-down distances are visible (winding road plus a dashed spot-to-building line with a distance tag); built js/street.js (2D SVG) with the slide 2 intro and the slide 6 rule animation (blue observe zone, 37% gate, parks at 90 m, honest "80 m was still ahead"); renumbered slides in code and README; P replays; verified in headless Chrome, fixing overlapping labels and road layout.
+
+## 2026-11-08 10:22:48 IST
+**Prompt:**
+```
+I can't see the new parking slides in the browser. Check that your changes are saved, check which local servers are running, start a fresh server for this project yourself, and give me the exact URL to open.
+```
+**Summary:** Confirmed the changes are saved; found two servers (ports 8000 and 8001), both already serving the new files, so the browser was likely using cached old JavaScript; started a fresh no-cache server on port 8010 and gave the URL http://localhost:8010/#2.
+
+## 2026-11-08 10:28:39 IST
+**Prompt:**
+```
+I tested slides 2 and 6 and I like them. I saved new screenshots on my Desktop: move them to screenshots/, replace the outdated rule slide screenshot, add them to README.md with captions, update the slide numbers and the README status, then commit and push.
+```
+**Summary:** Moved the slide 2 and slide 6 screenshots to screenshots/, deleted the outdated rule-slide screenshot, added captions to the README (11 slides), and committed and pushed the parking slides.
+
