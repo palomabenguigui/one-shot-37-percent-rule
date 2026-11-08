@@ -344,3 +344,10 @@ push!
 ```
 **Summary:** Committed and pushed the casual-tone README (new intro, "What we found", softened claims, numbers unchanged).
 
+## 2026-11-08 12:04:05 IST
+**Prompt:**
+```
+Enable GitHub Pages for this repository so the presentation can be opened directly in the browser without running a server. Then add the live link at the very top of the README, test that the live version works (including Python and the 3D), and commit and push.
+```
+**Summary:** Added .nojekyll and enabled GitHub Pages (main branch, root); tested the live site in a real browser (font, parking animation, 3D runway, a round, live Python: 10,000 games and the 200,000-game analysis, no console errors); added the live link at the top of the README and an "Online (easiest)" run option with the online fallback URL; committed and pushed.
+

@@ -1,3 +1,5 @@
+**▶ Open the presentation: https://palomabenguigui.github.io/one-shot-37-percent-rule/**
+
 # One Shot
 
 **You have $1M. 20 startups. One shot.**
@@ -29,6 +31,12 @@ It's a decision that shows up everywhere in management, not just in math class. 
 | 11 | Takeaway | When the room stopped, three conclusions, and "You only get one shot. Make it a strategy, not a guess." |
 
 ## How to run
+
+### Online (easiest)
+
+Open **https://palomabenguigui.github.io/one-shot-37-percent-rule/** in Chrome or Edge and press `F` for fullscreen. Nothing to install: it's hosted on GitHub Pages, and live Python and the 3D scene run right in the browser. The offline fallback works there too: **https://palomabenguigui.github.io/one-shot-37-percent-rule/?offline**
+
+### On your own computer
 
 The presentation is a local web page. It must be opened through a small local server, not by double-clicking `index.html`, because browsers block this kind of JavaScript (and Pyodide) on `file://` pages. Python 3 is all you need for the server.
 
