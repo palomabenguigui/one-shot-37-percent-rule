@@ -98,6 +98,7 @@ function playHTML(game) {
   const prev = game.bestBefore();
 
   // Round 1 shows no percentages and no zone, so nothing hints at the rule.
+  // The dots are the 2D fallback; when 3D works, the runway replaces them.
   const showZone = game.round.number === 2;
   const inZone = showZone && game.index < OBSERVE_K;
   const dot = (i) => `<span class="dot ${i < game.index ? "passed" : i === game.index ? "current" : ""}"></span>`;
@@ -114,7 +115,7 @@ function playHTML(game) {
         <span class="round-label">Round ${game.round.number}</span>
         <span class="counter">Startup <strong>${game.index + 1}</strong> of ${N}${showZone ? ` · <strong>${seenPct}%</strong> seen` : ""}</span>
       </header>
-      <div class="dots ${showZone ? "with-zone" : ""}">${dots}</div>
+      <div class="runway"><div class="dots ${showZone ? "with-zone" : ""}">${dots}</div></div>
       <p class="best-before">${prev ? `Best seen so far: <strong>${fmt(prev.value)}</strong> (#${prev.position} ${esc(prev.name)})` : "This is the first startup."}</p>
 
       <article class="card ${best ? "is-best" : ""}">
@@ -140,6 +141,7 @@ function investedHTML(game) {
   const s = game.round.startups[game.pick];
   return `
     <div class="invested">
+      <div class="runway"></div>
       <p class="invested-label">The room invested in</p>
       <h2 class="invested-name">#${s.position} ${esc(s.name)}</h2>
       <div class="invested-value">${fmt(s.value)}</div>

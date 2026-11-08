@@ -9,7 +9,8 @@
 - ✅ Game logic in 2D: two seeded rounds, invest/pass, forced last pick, four bots, reveal
 - ✅ Slide shell: 10 slides that fit any screen, keyboard navigation, the game inside slides 3, 4 and 6
 - ✅ Live Python with Pyodide on slides 7 to 9: live runs with 20, 50 or 100 startups, a replay of the room's own startups, an automatic fallback to saved results, and a code panel toggled with `C`
-- ⏭️ Next: the Three.js scene
+- ✅ Three.js scene: an animated 3D "deal flow" runway above the startup card in rounds 1 and 2
+- ⏭️ Next: final README, rehearsal and self-assessment
 
 ## How to run
 
@@ -67,6 +68,16 @@ Presentation clickers usually send `Page Up` / `Page Down`, so they work for mov
 **Slide 6: round 2 reveal with the bots.** All 20 startups in one row, with a line where each bot stops observing. The table compares the room with the four bots on the same startups.
 
 ![Slide 6: round 2 reveal with the bots](screenshots/06-slide6-round2-bots.png)
+
+### 3D runway (milestone 5)
+
+**Round 1: the runway.** An animated Three.js scene above the startup card. The current startup's tile rises into a spotlight (gold when it is the best so far). Passed tiles tip backward and sink into the floor, and future startups fade into the fog on the right. Round 1 shows no zones or percentages.
+
+![3D runway in round 1](screenshots/09-runway-round1.png)
+
+**Round 2: the observe-only zone.** The first 7 slots sit on a blue "OBSERVE ONLY" floor, followed by a gold 37% arch that flashes when the room passes it. The counter shows the share of startups seen so far.
+
+![3D runway in round 2 with the observe-only zone](screenshots/10-runway-round2.png)
 
 ### Live Python (milestone 4)
 

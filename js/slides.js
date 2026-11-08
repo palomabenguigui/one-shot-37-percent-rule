@@ -15,6 +15,7 @@ import { N } from "./game.js";
 import { roundSlideHTML, revealHTML, gameAction, getGame, stopPosition, zoneMarksHTML, OBSERVE_K } from "./ui.js";
 import { py, startPython, onChange, useFallback, requireSoon, runLive, replay, excerpt } from "./python.js";
 import { barChart, emptyChart, codePanel } from "./charts.js";
+import { showRunway, hideRunway } from "./scene3d.js";
 
 const stage = document.getElementById("stage");
 
@@ -269,6 +270,11 @@ function render() {
     ${statusPill()}
     ${s.id in codeShown ? `<div class="key-hint"><kbd>C</kbd> · code</div>` : ""}
     <div class="slide-num">${current + 1} / ${SLIDES.length}</div>`;
+
+  // 3D runway on slides 3 and 6 (and the round 1 pause screen).
+  const runway = stage.querySelector(".runway");
+  if (runway && s.game && showRunway(runway, getGame(s.game))) runway.classList.add("has-3d");
+  else hideRunway();
 }
 
 function show(i) {

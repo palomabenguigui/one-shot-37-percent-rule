@@ -208,3 +208,25 @@ Both modes, the C key and the hint work. I saved screenshots of slides 7 and 8 o
 ```
 **Summary:** Moved the slide 7 and slide 8 screenshots to screenshots/, added a "Live Python (milestone 4)" section with captions to the README, updated the status, and committed and pushed milestone 4.
 
+## 2026-11-08 00:27:48 IST
+**Prompt:**
+```
+Important: the 3D element is not optional. The course requires an animated Three.js element, so milestone 5 is mandatory. Update the PRD to reflect that.
+Before coding, show me the plan for the 3D scene: what the audience sees during rounds 1 and 2, how startups appear and disappear, how the observe-only zone looks in round 2, and how it stays simple and doesn't slow down the game. Wait for my OK.
+```
+**Summary:** Updated the PRD: Three.js is a mandatory course requirement (new deliverable, milestone 5 marked mandatory, risk rows no longer call it optional, 2D dots only as a no-WebGL safety net); proposed the 3D runway plan for rounds 1 and 2; waiting for OK.
+
+## 2026-11-08 00:33:08 IST
+**Prompt:**
+```
+The plan is OK. When you update the PRD, also make sure it says the 3D element is mandatory, not optional. Build it and tell me when to test.
+```
+**Summary:** Built the Three.js runway (js/scene3d.js, Three.js 0.187 vendored in vendor/three/): rising/tipping tiles, gold best-so-far, spinning pick, red wall on #20, round 2 blue observe floor and flashing 37% arch, draws only while moving, 2D dots fallback; shrank the card to fit; PRD now describes the runway and calls 3D mandatory in four places; verified in headless Chrome with WebGL (key response 0.3 ms, no errors).
+
+## 2026-11-08 09:58:11 IST
+**Prompt:**
+```
+I tested both rounds and the 3D scene works. I saved screenshots of the 3D runway in rounds 1 and 2 on my Desktop: move them to screenshots/, add them to README.md with captions, update the README status, then commit and push milestone 5.
+```
+**Summary:** Moved the two runway screenshots to screenshots/, added a "3D runway (milestone 5)" section with captions to the README, updated the status (next: final README, rehearsal, self-assessment), and committed and pushed milestone 5.
+

@@ -30,7 +30,7 @@ We are Technology Management students, and we follow the startup world closely. 
 - No online multiplayer, phones, or server. The room votes by show of hands.
 - No full mathematical derivation of the Secretary Problem.
 - No realistic startup valuation model. Startup details are flavor; only the return number matters.
-- No complex 3D. One simple Three.js scene.
+- No complex 3D. One simple Three.js scene (the scene itself is **mandatory**; see Deliverables).
 - No PowerPoint or external slide tool.
 
 ## 4. Audience and setup
@@ -126,11 +126,11 @@ Total ≈ 10:00. The room's own data (when it stopped in each round) is illustra
 |---|---|
 | Presentation | Single local `index.html` with vanilla JavaScript; slides are sections the presenter moves through |
 | Game logic | JavaScript module: startup generation, voting flow, bots, reveal |
-| 3D | Three.js, one scene: a corridor where startup cards emerge from fog ahead and fall away behind when rejected; the observation zone is highlighted in round 2 |
+| 3D (**mandatory**, course requirement) | Three.js, one animated scene: a "deal flow" runway above the startup card on slides 3 and 6. 20 slots recede into fog; the current startup's tile rises into a spotlight (gold if best so far), passed tiles tip backward and sink (gone forever), the chosen tile lifts and spins, and a red wall appears on startup #20. In round 2, the first 7 slots sit on a blue "observe only" floor with a gold 37% arch that flashes when the room passes it. It draws only while something moves and never blocks input. If WebGL is unavailable, 2D progress dots are shown instead so the show never breaks |
 | Python | One file, `sim.py`, the single source of truth for the simulation (numpy) |
 | Python in the slides | Pyodide is loaded from a CDN, loads `sim.py` and runs it live on slides 7–9 |
 | Fallback | The same `sim.py` is run ahead of time to produce `results.json`; slides use it automatically if Pyodide fails, is slow, or there is no internet |
-| Three.js | One small file stored in the repo under `vendor/`, so the game and 3D work offline |
+| Three.js | Version 0.187 (pinned), stored in the repo under `vendor/three/` (two module files and the MIT license), so the game and 3D work offline |
 | Startup sets | Fixed, seeded sets: one for round 1 and one for round 2, so rehearsals match the live show. In round 2 the room and the four bots play the same set |
 | Running | Mac: `python3 -m http.server` · Windows: `python -m http.server`. Then open `http://localhost:8000` (Pyodide does not work from `file://`) |
 
@@ -141,7 +141,7 @@ css/
 js/            game, slides, 3D scene, Pyodide bridge
 python/sim.py
 data/results.json
-vendor/        three.js (one file)
+vendor/three/  Three.js 0.187 (three.module.js, three.core.js, LICENSE)
 screenshots/
 PRD.md
 README.md
@@ -151,6 +151,7 @@ PROMPTS.md
 ## 9. Deliverables (course requirements)
 
 - [ ] Python runs **inside** the presentation (Pyodide)
+- [ ] An **animated Three.js element** in the presentation (course requirement; not optional)
 - [ ] All documentation in English
 - [ ] `PRD.md` (this document)
 - [ ] `README.md` with setup instructions, an explanation of the experiment, the hypothesis verdicts, and **screenshots**
@@ -167,7 +168,7 @@ Each milestone ends with a review and a push before the next begins. Time estima
 2. **Game logic (2D)**, ~45 min. Seeded startup sets, voting flow, forced last pick, bots, reveal. No 3D yet.
 3. **Slide shell**, ~40 min. All 10 slides, keyboard navigation, layout for projection.
 4. **Pyodide integration**, ~30 min. Live simulation on slides 7–9, background loading, automatic fallback.
-5. **Three.js scene**, ~40 min. The corridor, kept simple.
+5. **Three.js scene (mandatory)**, ~40 min. An animated 3D element is a course requirement. One simple scene, kept light so it never slows down the game.
 6. **Docs, rehearsal and self-assessment**, ~20 min. README with screenshots, a timed run-through, self-assessment, final push.
 
 ## 11. Risks and mitigations
@@ -178,9 +179,9 @@ Each milestone ends with a review and a push before the next begins. Time estima
 | Live simulation is too slow on stage | Vectorized numpy; live run uses fewer games (e.g. 10,000); the full 100,000+ analysis is pre-computed |
 | Results are inconclusive or reject a twist | That is a valid outcome; slides 8–10 are written from the data |
 | Unicorn-world averages are unstable | Report mean, median and 95% CI |
-| Running out of the 4-hour budget | Three.js is built last and is optional; the show works fully in 2D |
+| Running out of the 4-hour budget | The Three.js scene is required, so it is not cut. Polish (extra animations, styling) is cut instead |
 | Voting slows the game down | Presenter can move fast; target ~5 seconds per startup |
-| Three.js takes too long to build | Built last; the game works fully in 2D without it |
+| Three.js takes too long to build | One scene only, simple shapes, no textures or models. If a computer can't run 3D (no WebGL), the game falls back to the 2D progress dots so the show never breaks |
 | Projector readability | Large fonts, high contrast, tested on a projector if possible |
 
 ## 12. Decisions
