@@ -312,3 +312,20 @@ I tested the full presentation in fullscreen and the new design works. I saved n
 ```
 **Summary:** Replaced all old screenshots with 8 new fullscreen ones (slides 1, 2, 4, 6, 7, 8, 10, 11), rewrote the README screenshots section with captions, added the design milestone to the status, and committed and pushed the design milestone (including design-options/ and the Inter font).
 
+## 2026-11-08 11:33:47 IST
+**Prompt:**
+```
+Let's start milestone 6. First, on the unicorn world card, add "on average" so it's accurate.
+Then write the final README.md. It must include:
+- What One Shot is and why we chose this topic
+- How to run it on Mac and Windows, including the offline fallback URL
+- What each part does: Python (sim.py and Pyodide), JavaScript (game and slides), Three.js (3D runway)
+- The hypotheses and their verdicts, with the "small in practice" note
+- Keyboard controls table
+- All screenshots with captions
+- A "How we worked with AI" section: we planned with a PRD first, built in milestones with a push after each one, tested every step ourselves, and corrected the agent when needed (for example, the H2 decision rule and the 3D being mandatory). Link to PROMPTS.md.
+- Time spent, estimated from PROMPTS.md
+Also check that PROMPTS.md is complete and readable. Then commit and push. Don't write the self-assessment yet.
+```
+**Summary:** Changed the unicorn card to "On average, wait a little longer"; checked PROMPTS.md (all prompts since logging began, formatting OK); wrote the final README (topic, how to run on Mac/Windows with the ?offline URL, how each part works, hypotheses and verdicts, keyboard table, screenshots, how we worked with AI, time spent of about 5-5.5 h, credits); committed and pushed. Self-assessment not written yet.
+

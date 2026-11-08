@@ -263,7 +263,7 @@ const SLIDES = [
           <div class="lesson-cards">
             <div class="lesson-card"><div class="lesson-q">Finding the best</div><div class="lesson-a">→ 37%</div><div class="lesson-sub">Observe ${cut.best} of 20</div></div>
             <div class="lesson-card"><div class="lesson-q">Best average return</div><div class="lesson-a">→ Decide a bit earlier</div><div class="lesson-sub">Observe about ${cut.average} of 20</div></div>
-            <div class="lesson-card"><div class="lesson-q">Unicorn world</div><div class="lesson-a">→ Wait a little longer</div><div class="lesson-sub">Observe about ${cut.unicorn} of 20</div></div>
+            <div class="lesson-card"><div class="lesson-q">Unicorn world</div><div class="lesson-a">→ On average, wait a little longer</div><div class="lesson-sub">Observe about ${cut.unicorn} of 20</div></div>
           </div>
           <p class="final">You only get one shot.<br>Make it a strategy, not a guess.</p>
         </div>`;
