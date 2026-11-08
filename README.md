@@ -11,6 +11,7 @@
 - ✅ Live Python with Pyodide on slides 8 to 10: live runs with 20, 50 or 100 startups, a replay of the room's own startups, an automatic fallback to saved results, and a code panel toggled with `C`
 - ✅ Three.js scene: an animated 3D "deal flow" runway above the startup card in rounds 1 and 2
 - ✅ Parking-problem intro (slide 2) and the 37% rule on the same street (slide 6): 2D animations; the presentation now has 11 slides
+- ✅ Design: modern startup style (sunset gradient, floating white cards, Inter font), round arrow buttons, clearer game prompts, new title and takeaway slides. The three color options considered are in `design-options/`
 - ⏭️ Next: final README, rehearsal and self-assessment
 
 ## How to run
@@ -28,7 +29,7 @@ Live Python needs internet the first time: Pyodide (about 15–20 MB) is downloa
 
 Open **http://localhost:8000/?offline**
 
-The page then skips Pyodide and uses the saved results in `data/results.json`, exactly as it would if Pyodide failed to load. The pill in the bottom-left corner shows "💾 Saved results". Turning off Wi-Fi is not a reliable test, because the browser may already have a copy of Pyodide.
+The page then skips Pyodide and uses the saved results in `data/results.json`, exactly as it would if Pyodide failed to load. Slides 8 to 10 then show a "💾 Saved results" label instead of "🐍 Live". Turning off Wi-Fi is not a reliable test, because the browser may already have a copy of Pyodide.
 
 The fallback also switches on automatically if Pyodide fails, or if it is still not ready 10 seconds after opening slide 8. The hidden `O` key switches to saved results at any time.
 
@@ -53,61 +54,43 @@ To regenerate `data/results.json` outside the browser: `pip install -r requireme
 | `N` | Slides 4 and 7 | Hidden: restart the current round (for rehearsals) |
 | `O` | All slides | Hidden: switch to saved results instead of live Python |
 
-Presentation clickers usually send `Page Up` / `Page Down`, so they work for moving between slides. The startup-count buttons on slide 8 (20 / 50 / 100) are clicked with the mouse.
+Every slide also has small ← and → arrow buttons in the bottom corners. The → arrow is disabled during a round, like the → key. Presentation clickers usually send `Page Up` / `Page Down`, so they work for moving between slides. The startup-count buttons on slide 8 (20 / 50 / 100) are clicked with the mouse.
 
 ## Screenshots
 
-### The presentation (milestone 3, plus the parking slides)
+Fullscreen screenshots of the final design (sunset theme).
 
-**Slide 1: title.** The cold open, with the authors.
+**Slide 1: title.** One floating white card on the sunset gradient: the title, the hook line, three big numbers ($1M · 20 · 1) and the authors.
 
-![Slide 1: title](screenshots/04-slide1-title.png)
+![Slide 1: title](screenshots/slide01-title.png)
 
-**Slide 2: the parking problem.** A 2D animation before round 1. A car drives a winding road around the destination; each free spot appears with a dashed line and its distance to the building, so the audience can see distances go up and down. At each spot: "Stop here, or keep going?" The car drives past every spot and can't go back. The slide ends with apartments and jobs ("Same dilemma, different choices") and "Today, you'll face this as investors." It never mentions the 37% rule, so round 1 stays pure intuition.
+**Slide 2: the parking problem.** A 2D animation before round 1. A car drives a winding road around the destination; each free spot appears with a dashed line and its distance, so the audience sees distances go up and down. At each spot: "Stop here, or keep going?" The car never parks and can't go back. No mention of the 37% rule, so round 1 stays pure intuition.
 
-![Slide 2: the parking problem](screenshots/11-slide2-parking.png)
+![Slide 2: the parking problem](screenshots/slide02-parking.png)
 
-**Slide 6: the 37% rule, on the same street.** The first 3 of 8 spots are blue ("observe only"), and a box tracks the closest spot seen so far (120 m). After the gold 37% line, the car passes spots that are farther and parks at the first one closer than everything it has seen (90 m). Then it shows honestly that an even closer spot (80 m) was still ahead: the rule gives the best odds, not a guarantee.
+**Slide 4: round 1.** The animated Three.js runway above the startup card: the current startup's tile rises into the spotlight (amber when it is the best so far), passed tiles sink away, and future ones fade into the distance. The room votes by show of hands; "Your call: Invest or Pass?" sits above the buttons, and the next arrow stays disabled until the room invests. Round 1 shows no percentages.
 
-![Slide 6: the 37% rule on the parking street](screenshots/12-slide6-37-rule.png)
+![Slide 4: round 1](screenshots/slide04-round1.png)
 
-**Slide 7: round 2 reveal with the bots.** All 20 startups in one row, with a line where each bot stops observing. The table compares the room with the four bots on the same startups.
+**Slide 6: the 37% rule, on the same street.** The first 3 of 8 spots are blue ("observe only"). After the gold 37% line, the car parks at the first spot closer than every spot it has seen (90 m), and then shows that an even closer spot (80 m) was still ahead: the rule gives the best odds, not a guarantee.
 
-![Slide 7: round 2 reveal with the bots](screenshots/06-slide6-round2-bots.png)
+![Slide 6: the 37% rule](screenshots/slide06-37-rule.png)
 
-### 3D runway (milestone 5)
+**Slide 7: round 2.** The runway now shows the blue "observe only" floor and the gold 37% arch, and the counter shows the share of startups seen (here 40%, just past the arch). Four hidden bots play the same startups and are revealed after the room decides.
 
-**Round 1: the runway.** An animated Three.js scene above the startup card. The current startup's tile rises into a spotlight (gold when it is the best so far). Passed tiles tip backward and sink into the floor, and future startups fade into the fog on the right. Round 1 shows no zones or percentages.
+![Slide 7: round 2](screenshots/slide07-round2.png)
 
-![3D runway in round 1](screenshots/09-runway-round1.png)
+**Slide 8: Python, live.** After pressing `P`, Python runs 10,000 games in the browser (Pyodide) and shows how often each strategy picks the single best startup. It also replays the room's own round 2 startups, reshuffled 10,000 times. On the right, the rule exactly as written in `python/sim.py`.
 
-**Round 2: the observe-only zone.** The first 7 slots sit on a blue "OBSERVE ONLY" floor, followed by a gold 37% arch that flashes when the room passes it. The counter shows the share of startups seen so far.
+![Slide 8: live Python](screenshots/slide08-python-live.png)
 
-![3D runway in round 2 with the observe-only zone](screenshots/10-runway-round2.png)
+**Slide 10: Hypothesis 2.** In the unicorn world the best cutoff for average return moves later (from observing 5 to 6 startups): confirmed. The typical (median) result points the other way, shown as an observation. The label confirms the 200,000-game analysis was computed live in the browser.
 
-### Live Python (milestone 4)
+![Slide 10: Hypothesis 2](screenshots/slide10-hypothesis2.png)
 
-**Slide 8: Python, live.** Python is loaded and ready (green pill, bottom left). The presenter picks the number of startups per game (20, 50 or 100) and presses `P` to run 10,000 games in the browser. The panel on the right shows the rule exactly as written in `python/sim.py`.
+**Slide 11: takeaway.** When the room stopped in rounds 1 and 2, three conclusion cards, the closing line, and the parking street in the background with the car finally parked.
 
-![Slide 8: live Python, ready to run](screenshots/07-slide7-python-live.png)
-
-**Slide 9: Hypothesis 1.** The 37% rule finds the single best startup most often, but the 25% strategy earns a slightly higher average return. The label at the bottom confirms the 200,000-game analysis was computed live in the browser. The code panel is hidden here by default (press `C` to show it).
-
-![Slide 9: Hypothesis 1](screenshots/08-slide8-hypothesis1.png)
-
-### The game (milestone 2)
-
-**Start menu.** The game test page from milestone 2, with one button per round. It has since been replaced by the slides.
-
-![Start menu](screenshots/01-menu.png)
-
-**Round 1 reveal.** All 20 startups are revealed after the room invests. The room's pick is marked ROOM, the best startup is marked BEST, and startups after the pick are marked "never seen." Round 1 shows no percentages, so nothing hints at the 37% rule.
-
-![Round 1 reveal](screenshots/02-round1-reveal.png)
-
-**Round 2 during play.** The counter shows the percentage of startups seen, and the first 7 startups form the "observe only" zone, ending at the 37% line. This startup beats everything seen so far, so it gets the gold BEST SO FAR badge.
-
-![Round 2 with the observe-only zone](screenshots/03-round2-observe-zone.png)
+![Slide 11: takeaway](screenshots/slide11-takeaway.png)
 
 ## Simulation results
 

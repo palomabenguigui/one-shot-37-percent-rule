@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>One Shot: slide 1 design options</title>
+<!--
+  Design mockup only (not used by the presentation).
+  Open with ?theme=sunset, ?theme=ocean or ?theme=citrus.
+-->
+<style>
+  @font-face {
+    font-family: "Inter";
+    src: url("../vendor/fonts/InterVariable.woff2") format("woff2");
+    font-weight: 100 900;
+  }
+
+  /* Each theme: background gradient, accent gradient for highlighted words, soft blobs. */
+  .theme-sunset { --g1: #ff6b6b; --g2: #ff8e53; --g3: #a855f7; --g4: #7c3aed; --blob1: #ffd1a6; --blob2: #f0abfc; }
+  .theme-ocean  { --g1: #1d4ed8; --g2: #2563eb; --g3: #06b6d4; --g4: #2dd4bf; --blob1: #a5f3fc; --blob2: #93c5fd; }
+  .theme-citrus { --g1: #facc15; --g2: #fb923c; --g3: #f472b6; --g4: #ec4899; --blob1: #fef08a; --blob2: #fbcfe8; }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #111; }
+  body { font-family: "Inter", system-ui, sans-serif; color: #0f172a; }
+
+  .stage {
+    position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px;
+    transform-origin: center; overflow: hidden;
+    background: linear-gradient(135deg, var(--g1) 0%, var(--g2) 35%, var(--g3) 75%, var(--g4) 100%);
+  }
+
+  /* Soft light blobs for depth. */
+  .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.55; }
+  .b1 { width: 720px; height: 720px; left: -160px; top: -220px; background: var(--blob1); }
+  .b2 { width: 820px; height: 820px; right: -240px; bottom: -320px; background: var(--blob2); }
+  .b3 { width: 420px; height: 420px; right: 420px; top: -120px; background: #fff; opacity: 0.25; }
+
+  /* Small floating "startup" cards around the main card. */
+  .mini {
+    position: absolute; width: 280px; padding: 22px 26px; border-radius: 24px;
+    background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(8px);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+  }
+  .mini .sector { font-size: 15px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #64748b; }
+  .mini .name { font-size: 26px; font-weight: 800; margin: 6px 0 10px; }
+  .mini .ret {
+    font-size: 40px; font-weight: 900;
+    background: linear-gradient(90deg, var(--g1), var(--g4)); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .m1 { left: 150px; top: 170px; transform: rotate(-8deg); }
+  .m2 { right: 160px; top: 210px; transform: rotate(7deg); }
+  .m3 { left: 110px; bottom: 110px; transform: rotate(6deg); }
+  .m4 { right: 100px; bottom: 120px; transform: rotate(-6deg); }
+
+  /* The main floating white card. */
+  .card {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 1060px; padding: 90px 80px 80px; border-radius: 48px; text-align: center;
+    background: #fff;
+    box-shadow: 0 40px 100px rgba(15, 23, 42, 0.25), 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+  .card h1 { font-size: 180px; font-weight: 900; letter-spacing: -0.05em; line-height: 0.95; margin: 0; }
+  .tagline { font-size: 50px; font-weight: 500; color: #475569; margin: 34px 0 0; letter-spacing: -0.01em; }
+  .tagline b {
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--g1), var(--g4)); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .authors { margin-top: 64px; font-size: 32px; font-weight: 700; }
+  .authors span {
+    display: inline-block; margin-top: 16px; padding: 8px 22px; border-radius: 999px;
+    font-size: 22px; font-weight: 700; color: #fff;
+    background: linear-gradient(90deg, var(--g1), var(--g4));
+  }
+
+  .num {
+    position: absolute; right: 36px; bottom: 28px; padding: 6px 16px; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85); font-size: 20px; font-weight: 700; color: #334155;
+  }
+  .theme-name {
+    position: absolute; left: 36px; bottom: 28px; padding: 6px 16px; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.85); font-size: 20px; font-weight: 800; color: #334155; text-transform: capitalize;
+  }
+</style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+
+    <div class="mini m1"><div class="sector">CleanTech</div><div class="name">SabraSolar</div><div class="ret">27.5x</div></div>
+    <div class="mini m2"><div class="sector">HealthTech</div><div class="name">Lev Pulse</div><div class="ret">0.02x</div></div>
+    <div class="mini m3"><div class="sector">FoodTech</div><div class="name">Shakshuka.ai</div><div class="ret">0.30x</div></div>
+    <div class="mini m4"><div class="sector">WaterTech</div><div class="name">Kinneret Listen</div><div class="ret">154.0x</div></div>
+
+    <main class="card">
+      <h1>One Shot</h1>
+      <p class="tagline">You have <b>$1M</b>. <b>20</b> startups. <b>One</b> shot.</p>
+      <div class="authors">Paloma Benguigui · Shira Dvir<br><span>Bar-Ilan University</span></div>
+    </main>
+
+    <div class="theme-name" id="theme-name"></div>
+    <div class="num">1 / 11</div>
+  </div>
+  <script>
+    const theme = new URLSearchParams(location.search).get("theme") || "sunset";
+    document.body.className = "theme-" + theme;
+    document.getElementById("theme-name").textContent = "Option: " + theme;
+    const fit = () => {
+      const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+      document.getElementById("stage").style.transform = `translate(-50%, -50%) scale(${s})`;
+    };
+    addEventListener("resize", fit);
+    fit();
+  </script>
+</body>
+</html>

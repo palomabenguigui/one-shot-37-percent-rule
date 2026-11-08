@@ -535,3 +535,286 @@ kbd {
 @keyframes fade-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 .slide-rule .rule-legend { margin-top: 26px; font-size: 32px; }
+
+/* ================================================================
+   SUNSET THEME (modern startup style)
+   Bright gradient background, floating white cards with soft
+   shadows, rounded corners, Inter font. Overrides the dark styles
+   above. Colors keep their meaning: blue = observe, amber = best
+   so far, green = invest / park, red = pass / last startup.
+   ================================================================ */
+
+@font-face {
+  font-family: "Inter";
+  src: url("../vendor/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+}
+
+:root {
+  --ink: #0f172a;          /* text on white cards */
+  --slate: #64748b;        /* secondary text on white cards */
+  --hair: #e2e8f0;         /* light borders on white cards */
+  --violet: #7c3aed;
+  --coral: #ff6b6b;
+  --amber: #f59e0b;
+  --amber-dark: #b45309;
+  --green: #16a34a;
+  --red: #ef4444;
+  --blue: #2563eb;
+  --sunset: linear-gradient(90deg, #ff6b6b, #a855f7);
+  --shadow: 0 30px 80px rgba(15, 23, 42, 0.22), 0 6px 18px rgba(15, 23, 42, 0.08);
+  --shadow-sm: 0 14px 34px rgba(15, 23, 42, 0.16);
+}
+
+html, body { font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; background: #1a1026; }
+
+#stage {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255, 209, 166, 0.75), transparent 38%),
+    radial-gradient(circle at 100% 100%, rgba(240, 171, 252, 0.6), transparent 45%),
+    radial-gradient(circle at 70% 0%, rgba(255, 255, 255, 0.25), transparent 30%),
+    linear-gradient(135deg, #ff6b6b 0%, #ff8e53 35%, #a855f7 75%, #7c3aed 100%);
+  color: #fff;
+}
+
+/* ---------- text that sits directly on the gradient ---------- */
+.kicker { color: rgba(255, 255, 255, 0.92); }
+.big, .py-title, .street-title, .headline, .title { color: #fff; text-shadow: 0 6px 30px rgba(15, 23, 42, 0.18); }
+.headline strong { color: #fff; text-decoration: underline; text-decoration-color: #fde047; text-decoration-thickness: 8px; text-underline-offset: 10px; }
+.muted { color: rgba(255, 255, 255, 0.8); }
+.topbar, .round-label { color: rgba(255, 255, 255, 0.85); }
+.counter strong { color: #fff; }
+.best-before { color: rgba(255, 255, 255, 0.88); }
+.best-before strong { color: #fff; }
+.summary { color: #fff; }
+.summary .label { color: rgba(255, 255, 255, 0.75); }
+.strip-caption, .meta, .controls { color: rgba(255, 255, 255, 0.9); }
+.meta.replay { color: #fff; }
+.meta.replay strong { color: #fff; text-decoration: underline; text-decoration-color: #fde047; text-decoration-thickness: 4px; }
+.goal { color: #fff; }
+.empty { color: #fff; }
+
+/* ---------- small pills in the corners ---------- */
+.slide-num, .key-hint, .py-pill {
+  background: rgba(255, 255, 255, 0.9); color: #334155; border: none;
+  border-radius: 999px; padding: 5px 14px; font-weight: 700; opacity: 1;
+}
+.key-hint { right: 128px; font-size: 18px; }
+.py-pill.ready { color: var(--green); }
+.py-pill.fallback { color: var(--amber-dark); }
+
+/* ---------- slide 1 ---------- */
+.title-card {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 1060px; padding: 90px 80px 80px; border-radius: 48px; text-align: center;
+  background: #fff; box-shadow: var(--shadow); color: var(--ink);
+}
+.title-card .title { color: var(--ink); text-shadow: none; font-size: 180px; font-weight: 900; letter-spacing: -0.05em; line-height: 0.95; }
+.title-card .tagline { color: #475569; font-size: 50px; font-weight: 500; margin-top: 34px; }
+.title-card .tagline strong { font-weight: 900; background: var(--sunset); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.title-card .authors { margin-top: 64px; font-size: 32px; font-weight: 700; }
+.title-card .authors p { margin: 0; }
+.title-card .uni {
+  display: inline-block; margin-top: 16px; padding: 8px 22px; border-radius: 999px;
+  font-size: 22px; font-weight: 700; color: #fff; background: var(--sunset);
+}
+/* ---------- rules slide ---------- */
+.rules { background: #fff; color: var(--ink); border-radius: 40px; padding: 30px 70px; box-shadow: var(--shadow); }
+.rules li span { background: var(--sunset); color: #fff; }
+
+/* ---------- buttons ---------- */
+.btn { border: none; box-shadow: var(--shadow-sm); }
+.btn.primary { background: var(--ink); color: #fff; }
+.btn.invest { background: var(--green); color: #fff; }
+.btn.pass { background: #fff; color: var(--red); border: 3px solid var(--red); }
+.btn:disabled { opacity: 0.45; }
+
+/* ---------- the startup card (rounds) ---------- */
+.card { background: #fff; border: 4px solid transparent; box-shadow: var(--shadow); color: var(--ink); }
+.card.is-best { border-color: var(--amber); box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.25), var(--shadow); }
+.badge { background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #3b2300; box-shadow: var(--shadow-sm); }
+.sector { color: var(--violet); }
+.pitch { color: #475569; }
+.return-label { color: var(--slate); }
+.return { color: var(--ink); }
+.card.is-best .return { color: var(--amber-dark); }
+.last-note { color: var(--red); }
+.zone-chip { color: var(--blue); border-color: var(--blue); }
+
+/* 3D runway sits on a white card */
+.runway.has-3d { background: #fff; border-radius: 24px; box-shadow: var(--shadow); }
+.runway-canvas { border-radius: 24px; }
+.dot { border-color: rgba(255, 255, 255, 0.6); }
+.dot.passed { background: rgba(255, 255, 255, 0.4); }
+.dot.current { background: #fff; border-color: #fff; }
+
+/* round 1 pause screen */
+.invested-label { color: rgba(255, 255, 255, 0.85); }
+.invested-name { color: #fff; }
+.invested-value { color: #fff; text-shadow: 0 8px 40px rgba(15, 23, 42, 0.25); }
+.invested-question { color: #fff; }
+
+/* ---------- reveal ---------- */
+.tile, .cell { background: #fff; border: 3px solid transparent; box-shadow: var(--shadow-sm); color: var(--ink); }
+.tile.unseen, .cell.unseen { opacity: 0.7; border: 3px dashed var(--hair); background: rgba(255, 255, 255, 0.82); }
+.tile.picked, .cell.picked { border: 3px solid var(--violet); box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.25), var(--shadow-sm); opacity: 1; }
+.tile.top, .cell.top { border: 3px solid var(--amber); opacity: 1; }
+.tile.picked.top { border-color: var(--amber); box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.3), var(--shadow-sm); }
+.tile-pos, .cell-pos, .unseen-label { color: var(--slate); }
+.tile.top .tile-value, .cell.top .cell-value { color: var(--amber-dark); }
+.tag.best { background: linear-gradient(90deg, #fbbf24, #f59e0b); color: #3b2300; }
+.tag.room { background: var(--violet); color: #fff; }
+.tag.bot { background: var(--ink); color: #fff; }
+.zone-mark { border-left-color: rgba(255, 255, 255, 0.85); }
+.zone-mark span { background: transparent; color: #fff; }
+.zone-mark.main { border-left: 4px solid #fde047; }
+.zone-mark.main span { color: #fde047; }
+.bots {
+  background: #fff; color: var(--ink); border-collapse: separate; border-spacing: 0;
+  border-radius: 24px; overflow: hidden; box-shadow: var(--shadow);
+}
+.bots th, .bots td { border-bottom: 2px solid var(--hair); }
+.bots th { color: var(--slate); }
+.bots tr:last-child td { border-bottom: none; }
+.bots .room-row td { color: var(--violet); }
+.bots .winner td:last-child { color: var(--amber-dark); }
+.stuck { color: var(--red); }
+
+/* ---------- slide 11 ---------- */
+.pos-cell { background: #fff; border: none; color: var(--slate); box-shadow: var(--shadow-sm); }
+.pin.r1 { background: #fff; color: var(--ink); box-shadow: var(--shadow-sm); }
+.pin.r2 { background: var(--violet); color: #fff; box-shadow: var(--shadow-sm); }
+.lessons { background: #fff; color: var(--ink); border-radius: 32px; padding: 20px 50px; box-shadow: var(--shadow); }
+.final { color: #fff; text-shadow: 0 6px 30px rgba(15, 23, 42, 0.2); }
+
+/* ---------- Python slides ---------- */
+.chip { background: rgba(255, 255, 255, 0.9); border: none; color: var(--ink); box-shadow: var(--shadow-sm); }
+.chip.active { background: var(--ink); color: #fff; }
+.chart { background: #fff; color: var(--ink); border-radius: 28px; padding: 22px 28px 16px; box-shadow: var(--shadow); }
+.chart-title { color: var(--slate); }
+.bar-track { border-bottom-color: var(--hair); }
+.bar { background: #ddd6fe; }
+.bar-col.top .bar { background: linear-gradient(180deg, #ff6b6b, #a855f7); }
+.bar-col.top .bar-value { color: var(--violet); }
+.bar-sub { color: var(--slate); }
+.chart-overlay { color: var(--slate); }
+.verdict-row { background: #fff; color: var(--ink); border-radius: 24px; padding: 16px 28px; box-shadow: var(--shadow-sm); }
+.observation { color: #c026d3; }
+.source { align-self: flex-start; background: rgba(255, 255, 255, 0.92); border-radius: 999px; padding: 6px 16px; }
+.source.live { color: var(--green); }
+.source.saved { color: var(--amber-dark); }
+.code-panel { background: #0f172a; border: none; border-radius: 28px; box-shadow: var(--shadow); }
+.code-caption { color: #94a3b8; }
+
+/* ---------- 2D street (slides 2 and 6) ---------- */
+.street-slot { background: #fff; border-radius: 36px; box-shadow: var(--shadow); padding: 16px 20px 6px; }
+.street .blocks rect { fill: #f1f5f9; }
+.street .road { stroke: #334155; }
+.street .road-line { stroke: #fff; opacity: 0.8; }
+.street .building rect { fill: #fff; stroke: var(--violet); }
+.street .building-label { fill: var(--violet); }
+.street .dist line { stroke: #475569; }
+.street .dist rect { fill: #fff; stroke: #475569; }
+.street .dist text { fill: var(--ink); }
+.street .dist.parked line, .street .dist.parked rect { stroke: var(--green); }
+.street .dist.parked text { fill: var(--green); }
+.street .dist.ghost line, .street .dist.ghost rect { stroke: var(--amber); }
+.street .dist.ghost text { fill: var(--amber-dark); }
+.street .spot rect { fill: rgba(22, 163, 74, 0.15); stroke: var(--green); }
+.street .spot .spot-p { fill: var(--green); }
+.street .spot.passed rect, .street .spot.farther rect { fill: #f1f5f9; stroke: #94a3b8; }
+.street .spot.farther .spot-p { fill: #94a3b8; }
+.street .spot.observe rect { fill: rgba(37, 99, 235, 0.18); stroke: var(--blue); }
+.street .spot.observe .spot-p { fill: var(--blue); }
+.street .spot.parked rect { fill: rgba(22, 163, 74, 0.35); }
+.street .spot.ghost rect { fill: rgba(245, 158, 11, 0.18); stroke: var(--amber); }
+.street .spot.ghost .spot-p { fill: var(--amber-dark); }
+.street .gate line { stroke: var(--amber); }
+.street .gate text { fill: var(--amber-dark); }
+.street .car-body { fill: var(--violet); stroke: #4c1d95; }
+.street .car-glass { fill: #ede9fe; opacity: 0.9; }
+.street .bubble rect { fill: var(--ink); }
+.street .bubble text { fill: #fff; }
+.street-caption { color: var(--ink); }
+.street-readout { background: #f8fafc; border-color: var(--hair); color: var(--slate); }
+.street-readout strong { color: var(--blue); }
+.street.faded .street-svg { opacity: 0.12; }
+.outro-icons { color: var(--slate); }
+.outro-line { color: var(--ink); }
+.outro-final { background: var(--sunset); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.slide-rule .rule-legend { background: #fff; color: var(--ink); border-radius: 28px; padding: 18px 40px; box-shadow: var(--shadow-sm); margin-top: 22px; }
+.observe-text strong { color: var(--blue); }
+.leap-text strong { color: var(--green); }
+
+.slide-rule .rule-legend { gap: 60px; font-size: 28px; width: 100%; }
+.slide-rule .rule-legend > div { flex: 1; }
+.chip:disabled { opacity: 0.6; }
+.btn.run:disabled { opacity: 0.6; background: #fff; color: var(--slate); }
+.title-card .tagline { font-size: 48px; letter-spacing: -0.01em; white-space: nowrap; }
+
+/* ---------- game buttons (sunset style) ---------- */
+.actions { margin-top: 10px; gap: 36px; }
+.actions .btn { border-radius: 999px; font-size: 36px; font-weight: 800; padding: 14px 60px; letter-spacing: 0.01em; }
+.btn.invest { background: var(--sunset); color: #fff; border: none; box-shadow: 0 16px 36px rgba(124, 58, 237, 0.35); }
+.btn.pass { background: #fff; color: var(--ink); border: none; box-shadow: var(--shadow-sm); }
+.btn.invest kbd { border-color: rgba(255, 255, 255, 0.8); color: #fff; }
+.btn.pass kbd { border-color: var(--hair); color: var(--slate); }
+.btn.pass:disabled { opacity: 0.45; }
+.your-call { margin: 22px 0 0; font-size: 30px; font-weight: 600; color: #fff; text-shadow: 0 4px 20px rgba(15, 23, 42, 0.2); }
+.your-call strong { font-weight: 900; }
+
+/* ---------- back / next arrows ---------- */
+.nav-arrow {
+  position: absolute; bottom: 16px; width: 56px; height: 56px; border-radius: 50%;
+  border: none; background: rgba(255, 255, 255, 0.92); color: var(--ink);
+  font: 800 28px "Inter", system-ui, sans-serif; cursor: pointer;
+  box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center;
+}
+.nav-arrow:hover:not(:disabled) { background: #fff; transform: translateY(-1px); }
+.nav-arrow:disabled { opacity: 0.35; cursor: not-allowed; }
+.nav-arrow.prev { left: 28px; }
+.nav-arrow.next { right: 28px; }
+.slide-num { right: 98px; bottom: 28px; }
+.key-hint { right: 190px; bottom: 28px; }
+
+/* slide 1: three big numbers instead of the startup cards */
+.title-card { width: 1240px; padding: 70px 80px 64px; }
+.title-card .title { font-size: 150px; }
+.title-card .tagline { margin-top: 24px; font-size: 44px; }
+.stats { display: flex; justify-content: center; align-items: flex-start; gap: 50px; margin-top: 50px; }
+.stat { min-width: 220px; }
+.stat-num {
+  font-size: 120px; font-weight: 900; line-height: 1; letter-spacing: -0.04em;
+  background: var(--sunset); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.stat-label { margin-top: 12px; font-size: 24px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
+.stat-dot { font-size: 90px; font-weight: 900; line-height: 1.1; color: #cbd5e1; }
+.title-card .authors { margin-top: 54px; }
+
+/* ---------- last slide: three conclusion cards over the parked street ---------- */
+.street-bg { position: absolute; inset: 0; pointer-events: none; }
+.street-bg .street { position: absolute; inset: 0; display: block; }
+.street-bg .blocks { display: none; }
+.street-bg .road { stroke: rgba(255, 255, 255, 0.35); }
+.street-bg .road-line { stroke: rgba(255, 255, 255, 0.6); }
+.street-bg .building { opacity: 0.55; }
+.street-bg .dist.parked line { stroke: #fff; }
+.street-bg .dist.parked rect { fill: #fff; stroke: var(--green); }
+.takeaway { position: relative; }
+.takeaway .big { margin-bottom: 10px; }
+.lesson-cards { display: flex; gap: 32px; margin-top: 10px; }
+.lesson-card {
+  width: 500px; padding: 28px 34px; border-radius: 28px; text-align: left;
+  background: #fff; color: var(--ink); box-shadow: var(--shadow);
+}
+.lesson-q { font-size: 22px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); }
+.lesson-a {
+  font-size: 40px; font-weight: 900; line-height: 1.15; margin-top: 10px; letter-spacing: -0.01em;
+  background: var(--sunset); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.lesson-sub { font-size: 22px; font-weight: 600; color: var(--slate); margin-top: 10px; }
+.takeaway .final { font-size: 54px; font-weight: 900; margin-top: 44px; max-width: none; }
+.takeaway .big { margin-bottom: 20px; }
+.takeaway .stops { margin: 0 0 34px; }
+.takeaway .final { font-size: 52px; line-height: 1.2; margin-top: 40px; }
+.street-bg .dist rect, .street-bg .dist text { display: none; }

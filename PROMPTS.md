@@ -260,3 +260,55 @@ I tested slides 2 and 6 and I like them. I saved new screenshots on my Desktop: 
 ```
 **Summary:** Moved the slide 2 and slide 6 screenshots to screenshots/, deleted the outdated rule-slide screenshot, added captions to the README (11 slides), and committed and pushed the parking slides.
 
+## 2026-11-08 10:46:03 IST
+**Prompt:**
+```
+For the design, I want a modern startup style: bright, saturated gradients, floating white cards with soft shadows, rounded corners and a clean modern font. Not dark, and not plain white.
+Before changing all slides, show me slide 1 in 3 color variations of this style (for example sunset: coral to violet, ocean: electric blue to turquoise, citrus: yellow to pink). Save a screenshot of each in a folder named design-options/ and tell me when I can look at them.
+```
+**Summary:** Built a slide 1 mockup (design-options/slide1.html, not used by the deck) in the new style with three themes (sunset, ocean, citrus) and saved full-HD screenshots of each in design-options/; added the Inter font locally (vendor/fonts/, open license) so it works offline; the real slides are unchanged.
+
+## 2026-11-08 10:56:54 IST
+**Prompt:**
+```
+I agree. Go with sunset
+```
+**Summary:** Applied the sunset theme to all 11 slides (gradient background, white floating cards, Inter font, white text on the gradient, dark code panel, light 3D runway and street map), rebuilt slide 1 like the mockup, fixed issues found in screenshots (rules spacing, legend wrap, runway floor, disabled controls, tagline wrap); not committed yet.
+
+## 2026-11-08 11:12:31 IST
+**Prompt:**
+```
+The design looks good. A few fixes:
+1. Restyle the Invest and Pass buttons in the game to match the presentation's colors and style.
+2. Add small back and next arrow buttons in the bottom corners of every slide, matching the design. During an active round, the next arrow should be disabled, like the → key.
+3. On the game slides, add a clear prompt so the audience understands they must decide using the buttons, not by moving on. For example: "Your call: Invest or Pass?" near the buttons, and before the first startup a short line like "Vote with your hands. We'll click for you."
+4. Remove the "Python ready" pill from all slides. On slides 8 to 10, keep only the label that says whether results are live or saved.
+Tell me when I can test it.
+```
+**Summary:** Restyled Invest (sunset gradient pill) and Pass (white pill); added round back/next arrow buttons on every slide (next disabled during a round and on the last slide, same rule as the key); added "Your call: Invest or Pass?" above the buttons and "Vote with your hands. We'll click for you." on startup #1; removed the Python pill (slide 8 now always shows a live/saved label); updated README; checked with screenshots.
+
+## 2026-11-08 11:15:50 IST
+**Prompt:**
+```
+On slide 1, remove the startup cards. Instead, show three big numbers: "$1M · 20 · 1" with the labels "your money · startups · one shot" underneath, plus the title, the hook line and our names. Keep the same style and colors.
+```
+**Summary:** Slide 1 now has no startup cards: one white card with the title, the hook line, three big gradient numbers ($1M · 20 · 1) labeled "your money · startups · one shot", and the names; removed the unused mini-card styles; checked with a screenshot.
+
+## 2026-11-08 11:20:47 IST
+**Prompt:**
+```
+Let's improve the last slide:
+1. Replace the final line with: "You only get one shot. Make it a strategy, not a guess."
+2. Show the three conclusions as three cards instead of a paragraph: "Finding the best → 37%", "Best average return → decide a bit earlier", "Unicorn world → wait a little longer".
+3. Bring back the parking street in the background, with the car now parked, to close the story from slide 2.
+Keep the room's results from both rounds. Tell me when I can test it.
+```
+**Summary:** Rebuilt slide 11: the room's round 1/2 stopping points kept, three white conclusion cards (with best cutoffs from the simulation: observe 7 / about 5 / about 6 of 20), the new final line on two lines, and the faded parking street in the background with the car parked at the 90 m spot in the bottom-right corner; fixed overlaps found in screenshots.
+
+## 2026-11-08 11:29:12 IST
+**Prompt:**
+```
+I tested the full presentation in fullscreen and the new design works. I saved new fullscreen screenshots on my Desktop: replace all the old screenshots in screenshots/ with these, update README.md with the new images and captions, update the status, then commit and push the design milestone.
+```
+**Summary:** Replaced all old screenshots with 8 new fullscreen ones (slides 1, 2, 4, 6, 7, 8, 10, 11), rewrote the README screenshots section with captions, added the design milestone to the status, and committed and pushed the design milestone (including design-options/ and the Inter font).
+

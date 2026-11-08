@@ -17,7 +17,7 @@ import { roundSlideHTML, revealHTML, gameAction, getGame, stopPosition, zoneMark
 import { py, startPython, onChange, useFallback, requireSoon, runLive, replay, excerpt } from "./python.js";
 import { barChart, emptyChart, codePanel } from "./charts.js";
 import { showRunway, hideRunway } from "./scene3d.js";
-import { startStreet, reattachStreet, stopStreet } from "./street.js";
+import { startStreet, reattachStreet, stopStreet, mountParkedStreet } from "./street.js";
 
 const stage = document.getElementById("stage");
 
@@ -104,7 +104,7 @@ function slide7() {
             <button class="btn primary run" data-action="run" tabindex="-1" ${ready && !live.running ? "" : "disabled"}>Run <kbd>P</kbd></button>
           </div>
           ${chart}
-          ${meta}
+          ${meta || `<p class="meta">🐍 Live Python · ${py.status === "loading" ? "loading…" : "ready to run"}</p>`}
         </div>
         ${codeShown.python ? codePanel("The rule, as written in python/sim.py", excerpt("def choose(", "return np.where")) : ""}
       </div>
@@ -173,12 +173,19 @@ const SLIDES = [
   {
     id: "open",
     render: () => `
-      <div class="center">
+      <div class="title-card">
         <h1 class="title">One Shot</h1>
         <p class="tagline">You have <strong>$1M</strong>. <strong>20</strong> startups. <strong>One</strong> shot.</p>
+        <div class="stats">
+          <div class="stat"><div class="stat-num">$1M</div><div class="stat-label">your money</div></div>
+          <div class="stat-dot">·</div>
+          <div class="stat"><div class="stat-num">20</div><div class="stat-label">startups</div></div>
+          <div class="stat-dot">·</div>
+          <div class="stat"><div class="stat-num">1</div><div class="stat-label">one shot</div></div>
+        </div>
         <div class="authors">
           <p>Paloma Benguigui · Shira Dvir</p>
-          <p class="muted">Bar-Ilan University</p>
+          <span class="uni">Bar-Ilan University</span>
         </div>
       </div>`,
   },
@@ -197,10 +204,10 @@ const SLIDES = [
       <div class="center">
         <p class="kicker">The rules</p>
         <ul class="rules">
-          <li><span>1</span>20 startups appear <strong>one at a time</strong>.</li>
-          <li><span>2</span>For each one, you vote with your hands: <strong>invest</strong> or <strong>pass</strong>.</li>
-          <li><span>3</span>Pass, and it's <strong>gone forever</strong>.</li>
-          <li><span>4</span>Reach startup #20? The fund <strong>must invest</strong> in it.</li>
+          <li><span>1</span><div>20 startups appear <strong>one at a time</strong>.</div></li>
+          <li><span>2</span><div>For each one, you vote with your hands: <strong>invest</strong> or <strong>pass</strong>.</div></li>
+          <li><span>3</span><div>Pass, and it's <strong>gone forever</strong>.</div></li>
+          <li><span>4</span><div>Reach startup #20? The fund <strong>must invest</strong> in it.</div></li>
         </ul>
         <p class="goal">Your goal: back the best startup you can.</p>
       </div>`,
@@ -236,8 +243,16 @@ const SLIDES = [
         })
         .join("");
       const played = [1, 2].filter((n) => stopPosition(n)).length;
+      // Best cutoffs from the simulation (live or saved), with the known values as a fallback.
+      const h = py.analysis ? py.analysis.hypotheses : null;
+      const cut = {
+        best: h ? h.H0.best_cutoff : 7,
+        average: h ? h.H1.best_cutoff : 5,
+        unicorn: h ? h.H2.best_cutoff.unicorn : 6,
+      };
       return `
-        <div class="center">
+        <div class="street-bg"></div>
+        <div class="center takeaway">
           <p class="kicker">Takeaway</p>
           <h1 class="big">When did the room stop?</h1>
           <div class="stops">
@@ -245,12 +260,12 @@ const SLIDES = [
             <div class="pos-row">${cells}${zoneMarksHTML()}</div>
           </div>
           ${played < 2 ? `<p class="muted">Rounds not played yet are not shown.</p>` : ""}
-          <div class="lessons">
-            <p><strong>Finding <em>the</em> best?</strong> The 37% rule wins.</p>
-            <p><strong>Maximizing average return?</strong> Decide a little earlier.</p>
-            <p><strong>In a world of unicorns,</strong> a strategy can win on average while the typical outcome gets worse.</p>
+          <div class="lesson-cards">
+            <div class="lesson-card"><div class="lesson-q">Finding the best</div><div class="lesson-a">→ 37%</div><div class="lesson-sub">Observe ${cut.best} of 20</div></div>
+            <div class="lesson-card"><div class="lesson-q">Best average return</div><div class="lesson-a">→ Decide a bit earlier</div><div class="lesson-sub">Observe about ${cut.average} of 20</div></div>
+            <div class="lesson-card"><div class="lesson-q">Unicorn world</div><div class="lesson-a">→ Wait a little longer</div><div class="lesson-sub">Observe about ${cut.unicorn} of 20</div></div>
           </div>
-          <p class="final">There is no universal stopping rule. A good manager first defines what success means, then chooses when to stop searching.</p>
+          <p class="final">You only get one shot.<br>Make it a strategy, not a guess.</p>
         </div>`;
     },
   },
@@ -261,21 +276,13 @@ const SLIDES = [
 const clamp = (i) => Math.max(0, Math.min(SLIDES.length - 1, i));
 let current = clamp((parseInt(location.hash.slice(1), 10) || 1) - 1);
 
-function statusPill() {
-  const label = {
-    loading: `<span class="spinner"></span> Python loading…`,
-    ready: "🐍 Python ready",
-    fallback: "💾 Saved results",
-  }[py.status];
-  return `<div class="py-pill ${py.status}">${label}</div>`;
-}
-
 function render() {
   const s = SLIDES[current];
   stage.innerHTML = `
     <section class="slide slide-${s.id}">${s.render()}</section>
-    ${statusPill()}
     ${s.id in codeShown ? `<div class="key-hint"><kbd>C</kbd> · code</div>` : ""}
+    <button class="nav-arrow prev" data-action="nav-prev" tabindex="-1" aria-label="Previous slide" ${current === 0 ? "disabled" : ""}>←</button>
+    <button class="nav-arrow next" data-action="nav-next" tabindex="-1" aria-label="Next slide" ${canGoNext() ? "" : "disabled"}>→</button>
     <div class="slide-num">${current + 1} / ${SLIDES.length}</div>`;
 
   // 2D street on slides 2 and 6: start on arrival, otherwise keep it running.
@@ -284,6 +291,10 @@ function render() {
     if (streetRestart || !reattachStreet(slot)) startStreet(slot, s.street);
     streetRestart = false;
   } else stopStreet();
+
+  // Last slide: the parked car, in the background.
+  const bg = stage.querySelector(".street-bg");
+  if (bg) mountParkedStreet(bg, 1720, 965);
 
   // 3D runway on slides 4 and 7 (and the round 1 pause screen).
   const runway = stage.querySelector(".runway");
@@ -301,9 +312,14 @@ function show(i) {
   render();
 }
 
-function next(force = false) {
+// Same rule for the → key and the next arrow: never skip a round in progress.
+function canGoNext() {
   const s = SLIDES[current];
-  if (s.game && !getGame(s.game).done && !force) return; // don't skip a round in progress
+  return current < SLIDES.length - 1 && !(s.game && !getGame(s.game).done);
+}
+
+function next(force = false) {
+  if (!canGoNext() && !force) return;
   show(current + 1);
 }
 
@@ -328,7 +344,8 @@ const GAME_KEYS = { a: "invest", r: "pass", b: "bots", n: "restart", backspace: 
 
 function runGameAction(action, el) {
   const s = SLIDES[current];
-  if (action === "next") return next();
+  if (action === "next" || action === "nav-next") return next();
+  if (action === "nav-prev") return show(current - 1);
   if (action === "run") return runSlide7();
   if (action === "size") {
     live.n = Number(el.dataset.n);

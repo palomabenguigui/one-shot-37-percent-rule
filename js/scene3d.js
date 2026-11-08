@@ -14,15 +14,20 @@ const HEIGHT = 210;
 const GAP = 1.25;       // distance between slots
 const EASE = 9;         // higher = faster easing (about 0.3-0.5 s)
 
+// Light colors: the runway sits on a white card (sunset theme).
 const COLORS = {
-  bg: 0x0d1117,
-  floor: 0x161b22,
-  tile: 0x2a3340,
-  current: 0xf0f3f6,
-  gold: 0xffcc33,
-  blue: 0x4da3ff,
-  red: 0xff5c5c,
+  bg: 0xffffff,
+  floor: 0xf1f5f9,
+  marker: 0xcbd5e1,
+  edge: 0x94a3b8,
+  tile: 0xe2e8f0,
+  current: 0x7c3aed,   // violet: the startup on screen
+  gold: 0xf59e0b,      // amber: best so far
+  blue: 0x2563eb,      // observe-only zone
+  red: 0xef4444,
 };
+
+const TILE_BASE = new THREE.Color(COLORS.tile);
 
 let renderer = null;
 let scene, camera, light;
@@ -81,7 +86,7 @@ function build() {
   scene.add(light);
 
   // Floor and one faint marker per slot.
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(N * GAP + 60, 50), new THREE.MeshStandardMaterial({ color: COLORS.floor }));
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(N * GAP + 60, 50), new THREE.MeshBasicMaterial({ color: COLORS.floor })) // flat, clean floor;
   floor.rotation.x = -Math.PI / 2;
   floor.position.x = (N * GAP) / 2;
   scene.add(floor);
@@ -92,7 +97,7 @@ function build() {
 
   slots = Array.from({ length: N }, (_, i) => {
     const x = i * GAP;
-    const marker = new THREE.Mesh(markerGeo, new THREE.MeshBasicMaterial({ color: 0x30363d }));
+    const marker = new THREE.Mesh(markerGeo, new THREE.MeshBasicMaterial({ color: COLORS.marker }));
     marker.rotation.x = -Math.PI / 2;
     marker.position.set(x, 0.005, 0);
     scene.add(marker);
@@ -102,7 +107,7 @@ function build() {
     const mat = new THREE.MeshStandardMaterial({ color: COLORS.tile, emissive: COLORS.current, emissiveIntensity: 0, transparent: true });
     const box = new THREE.Mesh(tileGeo, mat);
     box.position.y = 0.575;
-    const edges = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: 0x9da7b3, transparent: true, opacity: 0.35 }));
+    const edges = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: COLORS.edge, transparent: true, opacity: 0.35 }));
     edges.position.y = 0.575;
     pivot.add(box, edges);
     scene.add(pivot);
@@ -116,11 +121,11 @@ function build() {
   zone = new THREE.Group();
   const zoneFloor = new THREE.Mesh(
     new THREE.PlaneGeometry(OBSERVE_K * GAP, 1.6),
-    new THREE.MeshBasicMaterial({ color: COLORS.blue, transparent: true, opacity: 0.22 })
+    new THREE.MeshBasicMaterial({ color: COLORS.blue, transparent: true, opacity: 0.18 })
   );
   zoneFloor.rotation.x = -Math.PI / 2;
   zoneFloor.position.set(((OBSERVE_K - 1) * GAP) / 2, 0.01, 0);
-  const label = labelSprite("OBSERVE ONLY", "#4da3ff");
+  const label = labelSprite("OBSERVE ONLY", "#2563eb");
   label.position.set(((OBSERVE_K - 1) * GAP) / 2, 1.5, 0);
   zone.add(zoneFloor, label);
 
@@ -130,7 +135,7 @@ function build() {
   );
   arch.rotation.y = Math.PI / 2;
   arch.position.set((OBSERVE_K - 0.5) * GAP, 0, 0);
-  const archLabel = labelSprite("37%", "#ffcc33");
+  const archLabel = labelSprite("37%", "#b45309");
   archLabel.position.set((OBSERVE_K - 0.5) * GAP, 1.3, 0);
   archLabel.scale.set(2.2, 0.41, 1);
   zone.add(arch, archLabel);
@@ -186,8 +191,9 @@ function step(now) {
     s.pivot.position.y = c.y + c.lift * 0.35;
     s.pivot.rotation.x = c.tilt; // tips backward, away from the audience
     s.mat.opacity = Math.max(c.opacity, 0);
+    s.mat.color.copy(TILE_BASE).lerp(s.color, c.glow); // on a light scene, tiles take the color itself
     s.mat.emissive.copy(s.color);
-    s.mat.emissiveIntensity = c.glow * 0.85;
+    s.mat.emissiveIntensity = c.glow * 0.3;
     s.edges.material.opacity = Math.max(c.opacity, 0.12) * (c.y < -0.6 ? 0 : 1);
     s.pivot.visible = c.y > -1.25;
   }

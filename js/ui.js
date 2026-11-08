@@ -116,7 +116,7 @@ function playHTML(game) {
         <span class="counter">Startup <strong>${game.index + 1}</strong> of ${N}${showZone ? ` · <strong>${seenPct}%</strong> seen` : ""}</span>
       </header>
       <div class="runway"><div class="dots ${showZone ? "with-zone" : ""}">${dots}</div></div>
-      <p class="best-before">${prev ? `Best seen so far: <strong>${fmt(prev.value)}</strong> (#${prev.position} ${esc(prev.name)})` : "This is the first startup."}</p>
+      <p class="best-before">${prev ? `Best seen so far: <strong>${fmt(prev.value)}</strong> (#${prev.position} ${esc(prev.name)})` : "Vote with your hands. We'll click for you."}</p>
 
       <article class="card ${best ? "is-best" : ""}">
         <div class="badge ${best ? "" : "hidden"}">🏆 BEST SO FAR</div>
@@ -129,6 +129,7 @@ function playHTML(game) {
         ${game.isLast ? `<p class="last-note">Last startup: the fund must invest.</p>` : ""}
       </article>
 
+      <p class="your-call">${game.isLast ? "Last startup: press <strong>Invest</strong> to finish the round." : "Your call: <strong>Invest</strong> or <strong>Pass</strong>?"}</p>
       <div class="actions">
         <button class="btn invest" data-action="invest" tabindex="-1">Invest <kbd>A</kbd></button>
         <button class="btn pass" data-action="pass" tabindex="-1" ${game.isLast ? "disabled" : ""}>Pass <kbd>R</kbd></button>

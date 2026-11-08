@@ -73,9 +73,9 @@ function el(tag, attrs = {}, parent) {
 }
 
 function buildScene(mode) {
-  root = document.createElement("div");
-  root.className = `street street-${mode}`;
-  root.innerHTML = `
+  const el0 = document.createElement("div");
+  el0.className = `street street-${mode}`;
+  el0.innerHTML = `
     <svg class="street-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"></svg>
     <div class="street-readout hidden"></div>
     <div class="street-caption"></div>
@@ -87,7 +87,7 @@ function buildScene(mode) {
       <p class="outro-line">Same dilemma, different choices.</p>
       <p class="outro-final hidden">Today, you'll face this as investors.</p>
     </div>`;
-  const svg = root.querySelector("svg");
+  const svg = el0.querySelector("svg");
 
   // City blocks in the background, for a top-down map feel.
   const blocks = el("g", { class: "blocks" }, svg);
@@ -158,7 +158,7 @@ function buildScene(mode) {
   el("rect", { x: -190, y: -96, width: 380, height: 50, rx: 25 }, bubble);
   el("text", { x: 0, y: -63 }, bubble).textContent = "Stop here, or keep going?";
 
-  return { svg, road, spots, car, bubble, gate };
+  return { el: el0, svg, road, spots, car, bubble, gate };
 }
 
 // ------------------------------------------------------------------ animation helpers
@@ -292,6 +292,7 @@ export function startStreet(container, mode) {
   stopStreet();
   const id = runId;
   const s = buildScene(mode);
+  root = s.el;
   container.appendChild(root);
   placeCar(s, 0);
   const play = mode === "rule" ? playRule : playIntro;
@@ -307,4 +308,32 @@ export function reattachStreet(container) {
 export function stopStreet() {
   runId++;
   root = null;
+}
+
+// ------------------------------------------------------------------ last slide
+
+// A still picture for the last slide: the same street, with the car parked at
+// the spot the 37% rule chose (closing the story from slide 2). The street is
+// shifted so the parked car lands at (x, y) on the stage, clear of the text.
+let parked = null;
+
+export function mountParkedStreet(container, x = 1600, y = 950) {
+  if (!parked) {
+    const s = buildScene("parked");
+    const closest = Math.min(...s.spots.slice(0, OBSERVE).map((sp) => sp.meters));
+    const spot = s.spots.slice(OBSERVE).find((sp) => sp.meters < closest) || s.spots[s.spots.length - 1];
+    spot.g.classList.remove("hidden");
+    spot.g.classList.add("parked");
+    spot.line.classList.remove("hidden");
+    spot.line.classList.add("parked");
+    s.car.setAttribute("transform", `translate(${spot.pos.x} ${spot.pos.y}) rotate(${spot.angle})`);
+    s.el.querySelector(".street-caption").remove();
+    s.svg.style.position = "absolute";
+    s.svg.style.width = `${W}px`;
+    s.svg.style.height = `${H}px`;
+    s.svg.style.left = `${x - spot.pos.x}px`;
+    s.svg.style.top = `${y - spot.pos.y}px`;
+    parked = s.el;
+  }
+  if (parked.parentNode !== container) container.appendChild(parked);
 }
