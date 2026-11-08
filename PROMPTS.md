@@ -329,3 +329,18 @@ Also check that PROMPTS.md is complete and readable. Then commit and push. Don't
 ```
 **Summary:** Changed the unicorn card to "On average, wait a little longer"; checked PROMPTS.md (all prompts since logging began, formatting OK); wrote the final README (topic, how to run on Mac/Windows with the ?offline URL, how each part works, hypotheses and verdicts, keyboard table, screenshots, how we worked with AI, time spent of about 5-5.5 h, credits); committed and pushed. Self-assessment not written yet.
 
+## 2026-11-08 11:52:18 IST
+**Prompt:**
+```
+I want the README to sound more casual and personal. Rewrite the intro in that tone: we're Technology Management students, we came across the 37% rule, found it interesting, and decided to build a small interactive experiment to try it out. We're not trying to prove or disprove a theory. Apply the same tone wherever the README makes strong claims, and present the results as "what we found". Keep all numbers exactly as they are.
+Show me the new intro before pushing.
+```
+**Summary:** Rewrote the README intro and "Why this topic" in a casual, personal tone; renamed results to "What we found" and softened strong claims (conclusion, unicorn world, lognormal reasoning, more-startups note); checked that every number is unchanged; showed the new intro and did not commit or push.
+
+## 2026-11-08 11:57:05 IST
+**Prompt:**
+```
+push!
+```
+**Summary:** Committed and pushed the casual-tone README (new intro, "What we found", softened claims, numbers unchanged).
+

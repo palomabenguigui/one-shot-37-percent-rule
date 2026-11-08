@@ -2,13 +2,15 @@
 
 **You have $1M. 20 startups. One shot.**
 
-One Shot is an interactive classroom presentation about a real management decision: **when to stop searching and commit**. The audience plays an investor who must back exactly one of 20 startups. The startups appear one at a time, and a rejected startup is gone forever. The room plays two rounds, the second against four algorithmic investors. Then Python runs live inside the presentation to test the famous **37% rule** (from the Secretary Problem), and to check whether the best strategy changes when we change *what we measure* and *what the startup world looks like*.
+Hi! We're Paloma Benguigui and Shira Dvir, Technology Management students at Bar-Ilan University. A while ago we came across the **37% rule**, an idea from math (the Secretary Problem) about when to stop searching and commit: look at the first 37% of your options without choosing, then go with the first one that beats everything you've seen. We found it really interesting, and since we follow the startup world, we started wondering what it would feel like from an investor's seat. So we built a small interactive experiment to try it out.
 
-By Paloma Benguigui and Shira Dvir, Bar-Ilan University.
+One Shot turns our class into a room full of investors. Everyone gets $1M (on paper) and 20 startups that show up one at a time. Pass on one, and it's gone for good. We play two rounds, the second one against four little bots, and then Python runs thousands of games live inside the presentation, so we can see how the rule holds up and whether the answer changes when you care about different things.
+
+We're not trying to prove or disprove anything: the math behind the rule is already well known. We just wanted to play with it, see it in action, and share what we found along the way.
 
 ## Why this topic
 
-We are Technology Management students, and we follow the startup world closely. Investors, founders and managers face the same problem again and again: opportunities arrive one at a time, waiting has a cost, and a rejected option rarely comes back. That applies to a deal, a hire, a supplier or a product launch window. We wanted to show that **deciding when to stop searching is a real management decision**, not just a math puzzle, and that the "right" rule depends on what a manager is trying to achieve.
+It's a decision that shows up everywhere in management, not just in math class. Startup deals, hiring, choosing a supplier, even finding an apartment: options come one at a time, waiting has a cost, and you rarely get a second chance at the one you passed. We liked the idea of letting the room feel that dilemma first, and only then looking at what the numbers say.
 
 ## The presentation (11 slides, about 10 minutes)
 
@@ -84,7 +86,7 @@ The room's choices are saved in the browser tab, so an accidental reload keeps t
 
 ### Python: the simulation
 
-- **`python/sim.py`** is the single source of truth for the math. It simulates the four "observe, then leap" strategies (and every possible cutoff from 0 to 19) on 200,000 games, in two return "worlds", and tests the hypotheses with a pre-set decision rule. It only needs numpy.
+- **`python/sim.py`** holds all the math. It simulates the four "observe, then leap" strategies (and every possible cutoff from 0 to 19) on 200,000 games, in two return "worlds", and tests the hypotheses with a pre-set decision rule. It only needs numpy.
 - **Same file, two places:**
   - **On a laptop:** `python python/sim.py` produces `data/results.json`, the offline fallback.
   - **In the browser:** **Pyodide** (Python compiled to WebAssembly, version 314.0.7, pinned) loads the same `sim.py` and runs it **inside the presentation**.
@@ -133,11 +135,11 @@ PRD.md                product requirements and plan
 PROMPTS.md            log of every prompt used to build the project
 ```
 
-## Hypotheses and results
+## What we found
 
-The famous rule is the starting point, not the conclusion. We wrote down three hypotheses **before** running the simulation, and a rule for judging them: a hypothesis is **confirmed** if the 95% confidence interval of the mean difference excludes zero in the predicted direction, **rejected** if it excludes zero in the opposite direction, and **inconclusive** otherwise. The median is reported as an observation only.
+We used the famous rule as a starting point and got curious about a few "what ifs". Before running anything, we wrote down three guesses (hypotheses) and how we'd judge them, so we couldn't move the goalposts after seeing the results: a hypothesis is **confirmed** if the 95% confidence interval of the mean difference excludes zero in the predicted direction, **rejected** if it excludes zero in the opposite direction, and **inconclusive** otherwise. The median is reported as an observation only.
 
-200,000 simulated games per strategy, with the same games used for every strategy and both worlds:
+Here's what came out of 200,000 simulated games per strategy (the same games for every strategy and both worlds):
 
 | | Hypothesis | Key evidence | Verdict |
 |---|---|---|---|
@@ -150,11 +152,11 @@ The famous rule is the starting point, not the conclusion. We wrote down three h
 - **H1 is real but small in practice.** Deciding at 25% instead of 37% raises the average return by about **2%**. The simulation is large enough to be sure the gap exists, but an investor would barely notice it in a single deal.
 - **H2 is also a small shift.** The best cutoff moves by one startup (from 5 to 6). In the unicorn world, 25% and 37% are nearly tied on average return (9.11x vs 9.17x).
 - **Observation for H2 (not part of the verdict):** in the unicorn world, the average and the typical result point in different directions. Waiting longer raises the *average* return because it catches more jackpots, but the *typical* (median) result is better with 25% (4.11x vs 3.98x). A strategy can win on average while the typical outcome gets worse, a familiar tension in venture capital.
-- **More startups:** on slide 8, the 37% strategy still finds the best most often with 50 and 100 startups (about 37% of the time).
+- **More startups:** in our runs on slide 8, the 37% strategy still came out on top with 50 and 100 startups (finding the best about 37% of the time).
 
-**Conclusion:** the 37% rule is the right answer to "how do I find *the* best?" If you care about average return, decide a bit earlier; in a unicorn world, on average, wait a little longer. There is no universal stopping rule: first define what success means.
+**What we took away:** if your goal is to find *the* single best option, the 37% rule did best in our simulation. If you care more about average return, deciding a bit earlier did slightly better, and in our unicorn world, waiting a little longer did slightly better on average. The differences are small, and they come from our simplified models, so we see them as an experiment rather than advice. For us, the main lesson is that the best stopping point depends on what you mean by "success".
 
-### Return models
+### The two worlds we used
 
 Returns are measured as multiples: 1x means you get your money back, 3x means you triple it. The simulation uses two "worlds":
 
@@ -166,14 +168,14 @@ Returns are measured as multiples: 1x means you get your money back, 3x means yo
 | Share of all returns from the top 4% | ~10% | ~50% |
 
 - **Normal world:** a steady, mature market. Most startups do okay and nobody does spectacularly.
-- **Unicorn world:** venture capital as it usually looks. Most startups lose money, and a rare few produce most of the returns. The numbers were tuned to match the pattern reported in published VC data (for example, Correlation Ventures' analysis of thousands of VC deals). The live game uses this world.
+- **Unicorn world:** roughly what venture capital tends to look like. Most startups lose money, and a rare few produce most of the returns. We tuned the numbers to resemble the pattern reported in published VC data (for example, Correlation Ventures' analysis of thousands of VC deals). The live game uses this world.
 
 > **These are illustrative models inspired by VC data, not predictions.** They are simplified on purpose so the experiment is easy to follow. They do not forecast how any real startup or fund will perform.
 
-**Why lognormal and not Pareto.** Both worlds use a lognormal curve, with the same shape and a different spread.
-- **It fits how startups grow:** growth compounds, so outcomes multiply. You can't lose more than 100%, but the upside has no ceiling.
-- **It keeps the experiment clean:** both worlds have the same shape, so any difference in results comes from one thing only, how unequal the outcomes are.
-- **It keeps averages measurable:** a Pareto ("power law") curve is the classic model for VC returns. But to match real VC data, its tail has to be so extreme that the average never settles down, even over 100,000 games, and our 95% confidence intervals would be meaningless. A wide lognormal reproduces the same pattern (most lose, a few win big) while keeping averages stable enough to test.
+**Why we went with lognormal and not Pareto.** Both worlds use a lognormal curve, with the same shape and a different spread.
+- **It matches how startups tend to grow:** growth compounds, so outcomes multiply. You can't lose more than 100%, but the upside has no ceiling.
+- **It keeps the experiment simple:** both worlds have the same shape, so differences in the results come from one thing, how unequal the outcomes are.
+- **It keeps averages measurable:** a Pareto ("power law") curve is the classic model for VC returns. But to match real VC data, its tail has to be so extreme that the average never settles down, even over 100,000 games, and our 95% confidence intervals wouldn't be reliable. A wide lognormal gives a similar pattern (most lose, a few win big) while keeping averages stable enough to test.
 
 ## Screenshots
 
@@ -213,7 +215,7 @@ Fullscreen screenshots of the final design.
 
 ## How we worked with AI
 
-We built One Shot with an AI coding agent (Claude Code, running Claude Opus 5.5). We made the decisions; the agent proposed, wrote code, and ran checks. How we worked:
+We built One Shot together with an AI coding agent (Claude Code, running Claude Opus 5.5). We made the decisions; the agent proposed ideas, wrote the code and ran checks. Here's how it went:
 
 - **Plan first.** Before any code, we asked the agent to evaluate the idea critically (is it original? what are the weak spots?), then to write a [PRD](PRD.md). We reviewed it, asked for changes (scope cut to about 4 hours, Windows instructions, extra deliverables) and only then approved it.
 - **Milestones, one push each.** We built in milestones: simulation → 2D game → slide shell → live Python → 3D scene → parking slides → design → final docs. Before each milestone the agent showed a plan and waited for our OK. After each one we committed and pushed, so the GitHub history shows the progress step by step.
