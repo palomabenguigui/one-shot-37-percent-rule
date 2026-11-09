@@ -265,12 +265,96 @@ def _print_report(r):
     print()
 
 
+def save_charts(r, folder):
+    """Save the results as PNG charts. Command line only: the browser never
+    calls this, so Pyodide does not need matplotlib."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    VIOLET, LIGHT, CORAL, GRAY = "#7c3aed", "#ddd6fe", "#ff6b6b", "#64748b"
+    plt.rcParams.update({"font.size": 12, "axes.spines.top": False, "axes.spines.right": False,
+                         "axes.titleweight": "bold", "axes.titlesize": 14})
+    names = list(r["strategies"])
+    strat = r["strategies"]
+    sweep = r["sweep"]
+    ks = sweep["cutoffs"]
+    trials = r["config"]["trials"]
+    folder.mkdir(exist_ok=True)
+    saved = []
+
+    def bars(ax, values, cis, highlight, fmt, ylabel):
+        colors = [VIOLET if n == highlight else LIGHT for n in names]
+        ax.bar(names, values, yerr=cis, color=colors, capsize=6, ecolor=GRAY)
+        for i, v in enumerate(values):
+            ax.text(i, v + max(values) * 0.02, fmt(v), ha="center", va="bottom", fontweight="bold")
+        ax.set_ylim(0, max(values) * 1.18)
+        ax.set_ylabel(ylabel)
+        ax.set_xlabel("Strategy (share of the 20 startups observed first)")
+
+    def sweep_line(ax, values, best, ylabel, color=VIOLET, label=None):
+        ax.plot(ks, values, "o-", color=color, ms=4, label=label)
+        ax.axvline(best, color=color, ls="--", lw=1)
+        ax.annotate(f"best: observe {best}", (best, values[best]), xytext=(10, -24),
+                    textcoords="offset points", color=color, fontweight="bold",
+                    bbox=dict(fc="white", ec="none", alpha=0.9, pad=2))
+        for k in r["config"]["strategies"].values():
+            ax.axvline(k, color=GRAY, lw=0.6, alpha=0.3)
+        ax.set_xlabel("Startups observed before leaping (k)")
+        ax.set_ylabel(ylabel)
+        ax.set_xticks(range(0, len(ks), 2))
+
+    def save(fig, name, title, error_bars=True):
+        fig.suptitle(title, fontsize=16, fontweight="bold")
+        note = " · error bars = 95% CI" if error_bars else ""
+        fig.text(0.99, 0.01, f"{trials:,} simulated games · seed {r['config']['seed']}{note}",
+                 ha="right", fontsize=9, color=GRAY)
+        fig.tight_layout(rect=(0, 0.03, 1, 0.95))
+        path = folder / name
+        fig.savefig(path, dpi=150)
+        plt.close(fig)
+        saved.append(path)
+
+    # 1. Strategy comparison: chance of picking the single best startup.
+    fig, (a, b) = plt.subplots(1, 2, figsize=(13, 5))
+    bars(a, [strat[n]["p_best"]["value"] for n in names], [strat[n]["p_best"]["ci"] for n in names],
+         "37%", lambda v: f"{100 * v:.1f}%", "Chance of picking the best")
+    a.set_title("The four strategies")
+    sweep_line(b, sweep["p_best"], r["hypotheses"]["H0"]["best_cutoff"], "Chance of picking the best")
+    b.set_title("Every possible cutoff")
+    save(fig, "strategies.png", f"H0: the 37% rule finds the best startup most often ({r['hypotheses']['H0']['verdict']})")
+
+    # 2. Hypothesis 1: average return in the normal world.
+    h1 = r["hypotheses"]["H1"]
+    fig, (a, b) = plt.subplots(1, 2, figsize=(13, 5))
+    bars(a, [strat[n]["normal"]["mean"] for n in names], [strat[n]["normal"]["ci"] for n in names],
+         "25%", lambda v: f"{v:.2f}x", "Average return (normal world)")
+    a.set_title(f"25% beats 37% by {h1['test']['diff']:+.3f}x (about {100 * h1['test']['relative_gain']:.0f}%)")
+    sweep_line(b, sweep["normal"]["mean"], h1["best_cutoff"], "Average return (normal world)")
+    b.set_title("Every possible cutoff")
+    save(fig, "hypothesis1-average-return.png", f"H1: for average return, stop earlier ({h1['verdict']})")
+
+    # 3. Hypothesis 2: the unicorn world moves the best cutoff later.
+    h2 = r["hypotheses"]["H2"]
+    fig, (a, b) = plt.subplots(1, 2, figsize=(13, 5))
+    sweep_line(a, sweep["normal"]["mean"], h2["best_cutoff"]["normal"], "Average return (normal world)")
+    a.set_title("Normal world")
+    sweep_line(b, sweep["unicorn"]["mean"], h2["best_cutoff"]["unicorn"], "Average return (unicorn world)", color=CORAL)
+    b.set_title("Unicorn world")
+    save(fig, "hypothesis2-unicorn-world.png",
+         f"H2: in a world of unicorns, the best cutoff moves later ({h2['verdict']})", error_bars=False)
+    return saved
+
+
 if __name__ == "__main__":
     from pathlib import Path
 
+    root = Path(__file__).resolve().parent.parent
     results = run()
     _print_report(results)
-    out = Path(__file__).resolve().parent.parent / "data" / "results.json"
+    out = root / "data" / "results.json"
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(results, indent=2))
-    print(f"Saved {out.relative_to(out.parent.parent)}")
+    print(f"Saved {out.relative_to(root)}")
+    for path in save_charts(results, root / "python-output"):
+        print(f"Saved {path.relative_to(root)}")

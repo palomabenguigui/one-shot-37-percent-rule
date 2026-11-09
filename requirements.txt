@@ -1,1 +1,2 @@
 numpy
+matplotlib  # only for the PNG charts in python-output/

@@ -358,3 +358,14 @@ Enable GitHub Pages for this repository so the presentation can be opened direct
 Move PROMPTS.md into a dedicated folder named prompts/, update every link to it in the README and PRD, and keep logging new prompts there. Then commit and push.
 ```
 **Summary:** Moved PROMPTS.md to prompts/PROMPTS.md with git (history kept, earlier entries untouched); updated the links in the README (project structure, "How we worked with AI", time spent, documentation) and the PRD (planned structure, deliverables checklist); new prompts are now logged there; committed and pushed.
+
+## 2026-11-09 09:41:51 IST
+**Prompt:**
+```
+Three things for the final submission:
+1. Move PROMPTS.md into a dedicated folder named prompts/, update all links, and keep logging there.
+2. I recorded a demo video of the presentation, it's on my Desktop. Add it to the repo in a folder named media/ (compress it if it's over 50 MB), create a short GIF preview from it, and show the GIF in the README with a link to the full video.
+3. Make sim.py also save its results as PNG charts (strategy comparison and the two hypotheses) in a folder named python-output/, and add them to the README in a section showing the Python results.
+Then commit and push.
+```
+**Summary:** (1) Already done in the previous commit (prompts/PROMPTS.md, links updated). (2) Compressed the 160 MB screen recording to media/demo.mp4 (2.6 MB, 1080p, 30 fps), made a 15-second GIF preview of six highlights (media/demo-preview.gif, under 1 MB), and added a Demo section to the README with the GIF linking to the video. (3) Added save_charts() to sim.py (matplotlib, command line only, so Pyodide still needs only numpy) saving strategies.png, hypothesis1-average-return.png and hypothesis2-unicorn-world.png to python-output/; results.json unchanged; added a "Python results" README section, matplotlib to requirements.txt and credits; re-tested the presentation (3D, live Python, no errors); committed and pushed.

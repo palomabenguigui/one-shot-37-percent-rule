@@ -10,6 +10,12 @@ One Shot turns our class into a room full of investors. Everyone gets $1M (on pa
 
 We're not trying to prove or disprove anything: the math behind the rule is already well known. We just wanted to play with it, see it in action, and share what we found along the way.
 
+## Demo
+
+[![A 15-second preview of the presentation: the title, the parking animation, round 1, round 2 with the 3D runway, live Python, and the takeaway](media/demo-preview.gif)](media/demo.mp4)
+
+▶ **[Watch the full demo video (1:27)](media/demo.mp4)**: a run-through of all 11 slides, including both rounds and Python running live in the browser.
+
 ## Why this topic
 
 It's a decision that shows up everywhere in management, not just in math class. Startup deals, hiring, choosing a supplier, even finding an apartment: options come one at a time, waiting has a cost, and you rarely get a second chance at the one you passed. We liked the idea of letting the room feel that dilemma first, and only then looking at what the numbers say.
@@ -65,7 +71,7 @@ pip install -r requirements.txt
 python python/sim.py
 ```
 
-This prints the results and rewrites `data/results.json`. On a Mac, use `pip3` and `python3`.
+This prints the results, rewrites `data/results.json`, and saves the PNG charts in `python-output/` (see [Python results](#python-results)). On a Mac, use `pip3` and `python3`.
 
 ## Keyboard controls
 
@@ -94,9 +100,9 @@ The room's choices are saved in the browser tab, so an accidental reload keeps t
 
 ### Python: the simulation
 
-- **`python/sim.py`** holds all the math. It simulates the four "observe, then leap" strategies (and every possible cutoff from 0 to 19) on 200,000 games, in two return "worlds", and tests the hypotheses with a pre-set decision rule. It only needs numpy.
+- **`python/sim.py`** holds all the math. It simulates the four "observe, then leap" strategies (and every possible cutoff from 0 to 19) on 200,000 games, in two return "worlds", and tests the hypotheses with a pre-set decision rule. The simulation itself only needs numpy (matplotlib is used only to save the PNG charts on a laptop).
 - **Same file, two places:**
-  - **On a laptop:** `python python/sim.py` produces `data/results.json`, the offline fallback.
+  - **On a laptop:** `python python/sim.py` produces `data/results.json` (the offline fallback) and the charts in `python-output/`.
   - **In the browser:** **Pyodide** (Python compiled to WebAssembly, version 314.0.7, pinned) loads the same `sim.py` and runs it **inside the presentation**.
 - **Background worker:** Pyodide runs in a background thread (a Web Worker), so the slides stay smooth while it downloads and computes. As soon as it's ready, it recomputes the full 200,000-game analysis live (about 1 second). The result matches `results.json` exactly.
 - **Slide 8:** runs 10,000 new games on demand, with 20, 50 or 100 startups, and replays the room's own round 2 startups.
@@ -134,10 +140,12 @@ index.html            the presentation
 css/style.css         design
 js/                   slides, game, 3D runway, street animation, Pyodide bridge
 python/sim.py         the simulation
+python-output/        PNG charts saved by sim.py
 data/results.json     saved results (offline fallback)
 vendor/three/         Three.js 0.187 (MIT license)
 vendor/fonts/         Inter font (SIL Open Font License)
 screenshots/          README images
+media/                demo video and GIF preview
 design-options/       the three color mockups we considered for the design
 PRD.md                product requirements and plan
 prompts/PROMPTS.md    log of every prompt used to build the project
@@ -184,6 +192,22 @@ Returns are measured as multiples: 1x means you get your money back, 3x means yo
 - **It matches how startups tend to grow:** growth compounds, so outcomes multiply. You can't lose more than 100%, but the upside has no ceiling.
 - **It keeps the experiment simple:** both worlds have the same shape, so differences in the results come from one thing, how unequal the outcomes are.
 - **It keeps averages measurable:** a Pareto ("power law") curve is the classic model for VC returns. But to match real VC data, its tail has to be so extreme that the average never settles down, even over 100,000 games, and our 95% confidence intervals wouldn't be reliable. A wide lognormal gives a similar pattern (most lose, a few win big) while keeping averages stable enough to test.
+
+## Python results
+
+When you run `python python/sim.py`, it saves these three charts in [`python-output/`](python-output/). They come from the same 200,000 games as the table above (seed 37), so the numbers match the slides exactly.
+
+**Strategy comparison (H0).** Left: how often each strategy picks the single best startup, with 95% confidence intervals (very narrow at this many games). Right: the same measure for every possible cutoff, from observing 0 startups to observing 19. The peak is at 7 of 20, the 37% rule.
+
+![H0: chance of picking the best startup by strategy and by cutoff](python-output/strategies.png)
+
+**Hypothesis 1: average return in the normal world.** 25% comes out slightly ahead of 37% (3.32x vs 3.25x, about 2%), and the best cutoff is to observe 5. Note how flat the top of the curve is: cutoffs from 4 to 7 are all very close.
+
+![H1: average return in the normal world by strategy and by cutoff](python-output/hypothesis1-average-return.png)
+
+**Hypothesis 2: the unicorn world.** The same curve in both worlds. In the unicorn world, the best cutoff moves one step later, from 5 to 6.
+
+![H2: average return by cutoff in the normal and unicorn worlds](python-output/hypothesis2-unicorn-world.png)
 
 ## Screenshots
 
@@ -255,6 +279,7 @@ The PRD planned about 4 hours. The extra hour or so came from additions beyond t
 
 - [Three.js](https://threejs.org) (MIT license): 3D runway
 - [Pyodide](https://pyodide.org) (MPL 2.0) and [numpy](https://numpy.org) (BSD): Python in the browser
+- [matplotlib](https://matplotlib.org) (matplotlib license, BSD-style): the PNG charts in `python-output/`
 - [Inter](https://rsms.me/inter/) by Rasmus Andersson (SIL Open Font License 1.1): font
 - All startups are fictional.
 
