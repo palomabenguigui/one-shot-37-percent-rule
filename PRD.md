@@ -149,7 +149,7 @@ vendor/three/  Three.js 0.187 (three.module.js, three.core.js, LICENSE)
 screenshots/
 PRD.md
 README.md
-PROMPTS.md
+prompts/PROMPTS.md
 ```
 
 ## 9. Deliverables (course requirements)
@@ -159,7 +159,7 @@ PROMPTS.md
 - [ ] All documentation in English
 - [ ] `PRD.md` (this document)
 - [ ] `README.md` with setup instructions, an explanation of the experiment, the hypothesis verdicts, and **screenshots**
-- [ ] `PROMPTS.md`, the log of all prompts
+- [ ] `prompts/PROMPTS.md`, the log of all prompts
 - [ ] Runs locally; works without internet using `results.json`
 - [ ] Multiple pushes to GitHub showing progress (at least one per milestone)
 - [ ] Self-assessment before submission: check every requirement above, run the full show once, and note what works and what could be improved

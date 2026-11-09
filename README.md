@@ -140,7 +140,7 @@ vendor/fonts/         Inter font (SIL Open Font License)
 screenshots/          README images
 design-options/       the three color mockups we considered for the design
 PRD.md                product requirements and plan
-PROMPTS.md            log of every prompt used to build the project
+prompts/PROMPTS.md    log of every prompt used to build the project
 ```
 
 ## What we found
@@ -235,11 +235,11 @@ We built One Shot together with an AI coding agent (Claude Code, running Claude 
   - **3D is mandatory:** the first PRD treated the Three.js scene as optional if time ran short. The course requires it, so we had the PRD and plan changed to make it mandatory.
   - **Wording accuracy:** we added "on average" to the unicorn-world conclusion, so the slide does not overstate the result.
 - **The agent also caught problems.** For example, it pointed out that a straight street toward the destination would make later parking spots always closer, which breaks the rule, and proposed the winding road. It also found that the browser was showing cached old files during a test.
-- **Every prompt is logged.** [PROMPTS.md](PROMPTS.md) contains every prompt we sent from the start of the project, with a timestamp and a one-line summary of what the agent did. Logging started with our third message; the two earlier ones were a command to check the AI model and a question about which folder we were in.
+- **Every prompt is logged.** [prompts/PROMPTS.md](prompts/PROMPTS.md) contains every prompt we sent from the start of the project, with a timestamp and a one-line summary of what the agent did. Logging started with our third message; the two earlier ones were a command to check the AI model and a question about which folder we were in.
 
 ## Time spent
 
-Estimated from the timestamps in [PROMPTS.md](PROMPTS.md). Each timestamp is when the agent finished a response, so the real sessions started a little earlier.
+Estimated from the timestamps in [prompts/PROMPTS.md](prompts/PROMPTS.md). Each timestamp is when the agent finished a response, so the real sessions started a little earlier.
 
 | Session | Time | What we did |
 |---|---|---|
@@ -261,4 +261,4 @@ The PRD planned about 4 hours. The extra hour or so came from additions beyond t
 ## Documentation
 
 - [PRD.md](PRD.md): product requirements and plan
-- [PROMPTS.md](PROMPTS.md): log of every prompt used to build the project
+- [prompts/PROMPTS.md](prompts/PROMPTS.md): log of every prompt used to build the project

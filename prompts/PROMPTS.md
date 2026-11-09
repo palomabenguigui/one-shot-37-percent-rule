@@ -351,3 +351,10 @@ Enable GitHub Pages for this repository so the presentation can be opened direct
 ```
 **Summary:** Added .nojekyll and enabled GitHub Pages (main branch, root); tested the live site in a real browser (font, parking animation, 3D runway, a round, live Python: 10,000 games and the 200,000-game analysis, no console errors); added the live link at the top of the README and an "Online (easiest)" run option with the online fallback URL; committed and pushed.
 
+
+## 2026-11-09 09:22:49 IST
+**Prompt:**
+```
+Move PROMPTS.md into a dedicated folder named prompts/, update every link to it in the README and PRD, and keep logging new prompts there. Then commit and push.
+```
+**Summary:** Moved PROMPTS.md to prompts/PROMPTS.md with git (history kept, earlier entries untouched); updated the links in the README (project structure, "How we worked with AI", time spent, documentation) and the PRD (planned structure, deliverables checklist); new prompts are now logged there; committed and pushed.
