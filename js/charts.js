@@ -47,6 +47,7 @@ function highlightLine(line) {
 }
 
 export function codePanel(caption, source) {
+  if (!source) return ""; // sim.py didn't load: show no panel rather than an empty one
   const body = source.split("\n").map(highlightLine).join("\n");
   return `
     <div class="code-panel">

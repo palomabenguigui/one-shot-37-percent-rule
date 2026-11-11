@@ -369,3 +369,17 @@ Three things for the final submission:
 Then commit and push.
 ```
 **Summary:** (1) Already done in the previous commit (prompts/PROMPTS.md, links updated). (2) Compressed the 160 MB screen recording to media/demo.mp4 (2.6 MB, 1080p, 30 fps), made a 15-second GIF preview of six highlights (media/demo-preview.gif, under 1 MB), and added a Demo section to the README with the GIF linking to the video. (3) Added save_charts() to sim.py (matplotlib, command line only, so Pyodide still needs only numpy) saving strategies.png, hypothesis1-average-return.png and hypothesis2-unicorn-world.png to python-output/; results.json unchanged; added a "Python results" README section, matplotlib to requirements.txt and credits; re-tested the presentation (3D, live Python, no errors); committed and pushed.
+
+## 2026-11-11 12:24:14 IST
+**Prompt:**
+```
+Check the GitHub repository and tell me which of these are done and pushed: the prompts/ folder, the demo video and GIF in media/ shown in the README, the Python PNG charts in python-output/ shown in the README, and the GitHub Pages live link at the top of the README.
+```
+**Summary:** Checked GitHub directly (repo contents, README on main, Pages status): all four are done and pushed (prompts/PROMPTS.md with no copy left at the root, media/demo.mp4 and demo-preview.gif shown in the README, the three python-output/ charts shown in the README, the live link on line 1 with Pages built and the site returning 200). Noted that the separate results.json fallback fix is still local, waiting on its live-Python test.
+
+## 2026-11-11 12:28:45 IST
+**Prompt:** (sent before the previous entry; logged now, once its test finished)
+```
+A review found this issue: in js/python.js, startPython() loads sim.py and results.json with Promise.all before entering the try/catch, so if sim.py fails to load, the fallback to results.json never activates. Fix it so results.json loads independently and the saved results always show if anything in the Python path fails. Then test the scenario: block python/sim.py, keep data/results.json available, open the presentation and confirm slides 8 to 10 show the saved results. Tell me the test result, then commit and push.
+```
+**Summary:** results.json now loads on its own and sim.py failures (network error or HTTP 404, now checked) go to the fallback; the worker reuses the page's sim.py text; slide 8 and the code panels handle missing data. Tested in headless Chrome: with sim.py blocked, and with sim.py returning 404, slides 8-10 all show the saved results with no errors; ?offline still works (with code panel); normal mode still goes live (slow today: Pyodide took about 6 minutes on a ~45 KB/s connection). Committed and pushed.

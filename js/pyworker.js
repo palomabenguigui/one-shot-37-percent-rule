@@ -14,8 +14,8 @@ self.onmessage = async (event) => {
       const { loadPyodide } = await import(payload.cdn + "pyodide.mjs");
       pyodide = await loadPyodide({ indexURL: payload.cdn });
       await pyodide.loadPackage("numpy");
-      const source = await (await fetch(payload.simUrl)).text();
-      pyodide.FS.writeFile("/home/pyodide/sim.py", source);
+      // The page already fetched sim.py (and checked it loaded); use that text.
+      pyodide.FS.writeFile("/home/pyodide/sim.py", payload.source);
       pyodide.runPython("import sys; sys.path.insert(0, '/home/pyodide'); import sim");
       self.postMessage({ id, ok: true });
       return;

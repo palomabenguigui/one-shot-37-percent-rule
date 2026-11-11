@@ -1,6 +1,6 @@
 // Live Python for slides 8-10, with an automatic fallback to data/results.json.
 //
-// Status: "loading" -> "ready", or "fallback" if Pyodide fails, if it is still
+// Status: "loading" -> "ready", or "fallback" if sim.py or Pyodide fails, if it is still
 // not ready 10 s after opening slide 8, if the page is opened with ?offline,
 // or if the presenter presses the hidden O key.
 
@@ -50,25 +50,42 @@ export function useFallback(reason) {
   notify();
 }
 
-export async function startPython() {
-  // Always load the saved results first: slides 8-9 can show them right away,
-  // and they are the fallback if Python never arrives.
-  const [saved, simText] = await Promise.all([
-    fetch("data/results.json").then((r) => r.json()),
-    fetch("python/sim.py").then((r) => r.text()),
-  ]);
-  py.analysis = saved;
-  py.source = "saved";
-  py.simSource = simText;
-  notify();
+// fetch() does not fail on a 404, so check the status ourselves.
+async function fetchOk(url, as) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  return r[as]();
+}
 
-  if (new URLSearchParams(location.search).has("offline")) return useFallback("?offline in the URL");
+export async function startPython() {
+  // The saved results load on their own, never tied to the Python path:
+  // slides 9-10 show them right away, and they are the fallback if anything
+  // in the Python path fails.
+  const saved = fetchOk("data/results.json", "json")
+    .then((data) => {
+      if (py.source !== "live") Object.assign(py, { analysis: data, source: "saved" });
+      notify();
+    })
+    .catch((err) => console.error("Saved results unavailable:", err.message));
+
+  // sim.py feeds the code panels (also in offline mode) and the live worker.
+  const sim = fetchOk("python/sim.py", "text").then((text) => {
+    py.simSource = text;
+    notify();
+  });
+  sim.catch(() => {}); // a failure is handled below; this only avoids an "unhandled" warning
+
+  if (new URLSearchParams(location.search).has("offline")) {
+    await saved;
+    return useFallback("?offline in the URL");
+  }
 
   try {
+    await sim;
     worker = new Worker("js/pyworker.js", { type: "module" });
     worker.onmessage = onMessage;
     worker.onerror = (e) => useFallback(e.message || "worker error");
-    await call("init", { cdn: CDN, simUrl: new URL("python/sim.py", location.href).href });
+    await call("init", { cdn: CDN, source: py.simSource });
     if (py.status === "fallback") return;
     py.status = "ready";
     notify();
@@ -80,6 +97,7 @@ export async function startPython() {
     py.liveMs = res.ms;
     notify();
   } catch (err) {
+    await saved;
     useFallback(err.message);
   }
 }

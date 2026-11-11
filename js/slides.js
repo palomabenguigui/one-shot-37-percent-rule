@@ -63,7 +63,9 @@ function slide7() {
   let chart;
   let meta = "";
 
-  if (py.status === "fallback") {
+  if (py.status === "fallback" && !py.analysis) {
+    chart = emptyChart(title, labels, "Loading saved results…");
+  } else if (py.status === "fallback") {
     const s = py.analysis.strategies;
     chart = barChart({
       title,
