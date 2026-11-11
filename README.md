@@ -270,10 +270,12 @@ Estimated from the timestamps in [prompts/PROMPTS.md](prompts/PROMPTS.md). Each 
 | Wed 4 Nov, afternoon | ~10 min | Set up the prompt log |
 | Wed 4 Nov, evening | ~2.5 h | Idea evaluation, PRD, GitHub repo, simulation (milestone 1), 2D game (milestone 2), slide shell (milestone 3) |
 | Sat 7 Nov, night | ~45 min | Live Python with Pyodide (milestone 4), 3D runway (milestone 5) |
-| Sun 8 Nov, morning | ~2 h | Parking slides, the new design, final README |
-| **Total** | **about 5 to 5.5 hours** | |
+| Sun 8 Nov, morning | ~2 h | Parking slides, the new design, final README, GitHub Pages |
+| Mon 9 Nov, morning | ~20 min | Prompt log moved to `prompts/`, demo video and GIF preview, Python PNG charts |
+| Wed 11 Nov, midday | ~35 min | Fallback fix (saved results load even if `sim.py` fails) and its tests, final review fixes to the PRD and README |
+| **Total** | **about 6 to 6.5 hours** | |
 
-The PRD planned about 4 hours. The extra hour or so came from additions beyond the original plan: the parking-problem slides and the full redesign.
+The PRD planned about 4 hours. The extra time came from additions beyond the original plan: the parking-problem slides, the full redesign, and the final-submission extras (demo video, charts, and fixes from our reviews).
 
 ## Credits
 

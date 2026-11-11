@@ -1,7 +1,7 @@
 # PRD: *One Shot*, an Interactive Experiment on When to Stop Searching
 
 **Status:** Approved
-**Last updated:** 2026-11-04
+**Last updated:** 2026-11-11
 **Format:** 11-slide interactive web presentation, runs locally, ~10 minutes
 **Work budget:** ~4 hours
 
@@ -76,9 +76,14 @@ The simulation compares the four strategies (plus a full sweep of every cutoff, 
 
 Return distributions ("worlds"):
 
-- **Normal world:** returns vary moderately, with no extreme outliers (candidate: lognormal with low spread).
-- **Unicorn world:** heavy-tailed returns, where one startup can be worth more than all the others combined (candidate: Pareto).
-- Exact distributions and parameters are chosen in Milestone 1 and explained in plain terms (no formulas required) in the README and on the slides.
+- **Normal world:** returns vary moderately, with no extreme outliers (chosen: lognormal, median 2x, low spread 0.4).
+- **Unicorn world:** heavy-tailed returns, where most startups lose money and a rare few produce most of the returns (chosen: lognormal, median 0.5x, wide spread 1.7). Pareto was the first candidate; see the decision below.
+- The distributions are explained in plain terms (no formulas required) in the README.
+
+> **Decision (Milestone 1): lognormal for both worlds, not Pareto.**
+> - **It matches how startups tend to grow:** growth compounds, so outcomes multiply. You can't lose more than 100%, but the upside has no ceiling.
+> - **It keeps the experiment simple:** both worlds have the same shape, so differences in the results come from one thing, how unequal the outcomes are.
+> - **It keeps averages measurable:** to match real VC data, a Pareto tail has to be so extreme that the average never settles down, even over 100,000 games, and the 95% confidence intervals the decision rule depends on wouldn't be reliable. A wide lognormal gives a similar pattern (most lose, a few win big) while keeping averages stable enough to test.
 
 Because all strategies decide using only **relative rank** ("is this the best so far?"), P(best), stuck rate and bad-pick rate are the same in both worlds. Only **average return** changes. That is what the hypotheses test.
 
@@ -101,7 +106,7 @@ Because all strategies decide using only **relative rank** ("is this the best so
 - A confirmed effect can still be small. Alongside each verdict we report the size of the effect in plain terms (e.g. "about 2% higher average return").
 
 ### How results drive the slides
-Slides 8 and 9 are **result-driven**. Each one states the hypothesis, shows the chart, and stamps a verdict: **CONFIRMED / REJECTED / INCONCLUSIVE**. The final takeaway (slide 10) is written only after the results are known.
+Slides 9 and 10 are **result-driven**. Each one states the hypothesis, shows the chart, and stamps a verdict: **CONFIRMED / REJECTED / INCONCLUSIVE**. The final takeaway (slide 11) is written only after the results are known.
 
 ## 7. Slide plan (~10 minutes)
 

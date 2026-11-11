@@ -390,3 +390,12 @@ A review found this issue: in js/python.js, startPython() loads sim.py and resul
 is it already finished?
 ```
 **Summary:** Confirmed that everything requested so far is done and pushed (latest commit cc4caeb, live site rebuilt); the only open item is the self-assessment, still waiting for the go-ahead.
+
+## 2026-11-11 12:43:13 IST
+**Prompt:**
+```
+Red team review before submission. Fix these three things, then commit and push:
+1. PRD.md is out of sync with the final product: line 80 still says the unicorn world uses Pareto (we chose lognormal; add a short "Decision" note explaining why, as in the README), and lines 104 and 184 use old slide numbers (hypotheses are now slides 9-10, takeaway is slide 11). Update "Last updated" to today.
+2. The "Time spent" table in README.md is missing the 9 Nov and 11 Nov sessions (demo video, Python charts, fallback fix). Add them using the timestamps in prompts/PROMPTS.md and update the total.Log this prompt in prompts/PROMPTS.md as usual.
+```
+**Summary:** PRD: both worlds now say lognormal (with parameters), added a "Decision (Milestone 1)" note on lognormal vs Pareto, fixed line 104 to slides 9-10 and takeaway slide 11, Last updated 2026-11-11; line 184 already read "slides 9–11" (correct), so left it. README: added the Mon 9 Nov (~20 min) and Wed 11 Nov (~35 min) sessions, added GitHub Pages to the 8 Nov row, total now about 6 to 6.5 hours. Committed and pushed.
